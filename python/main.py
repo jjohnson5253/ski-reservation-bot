@@ -1,8 +1,10 @@
 import sys
-import ikonScrapeInterface
+import ikonScraperInterface
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
+HEADLESS = 0
 
 """
 def constantCheck():
@@ -19,17 +21,29 @@ def main():
 	yearInput = sys.argv[4]
 
 	# initialize web driver
-	options = Options()
-	options.add_argument('--headless')
-	options.add_argument('--disable-gpu')
-	options.add_argument("window-size=1024,768")
-	options.add_argument("--no-sandbox")
-	driver = webdriver.Chrome(chrome_options=options)
+	if (HEADLESS):
+		options = Options()
+		options.add_argument('--headless')
+		options.add_argument('--disable-gpu')
+		options.add_argument("window-size=1024,768")
+		options.add_argument("--no-sandbox")
+		driver = webdriver.Chrome(chrome_options=options)
+	else:
+		driver = webdriver.Chrome()
 
-	ikonScrapeInterface.login(driver, pwInput)
+	ikonScraperInterface.login(driver, pwInput)
 
-	ikonScrapeInterface.isAvailable(driver, monthInput, dayInput, yearInput)
-	sys.exit()
+	ikonScraperInterface.selectMountain(driver, "Arapahoe Basin")
+
+	#ikonScraperInterface.isAvailable(driver, monthInput, dayInput, yearInput)
+
+	ikonScraperInterface.addReservedDatesToDB(driver)
+
+	# close driver
+	#driver.quit()
+
+	# quit app
+	#sys.exit()
 
 if __name__ == "__main__":
     main()
