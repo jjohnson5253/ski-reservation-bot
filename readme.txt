@@ -12,6 +12,13 @@ NOTE:
 	-run this to start the selenium server:
 		$ xvfb-run -a java -Dwebdriver.chrome.driver=/usr/bin/chromedriver -jar selenium-server-standalone-3.13.0.jar
 -must install chrome and correct chromedriver for system (linux/windows/mac)
+	-add to PATH
+-must install mysql
+
+
+TODO:
+-make it so php doesn't show the username and password for the sql database on website php files
+
 
 
 
