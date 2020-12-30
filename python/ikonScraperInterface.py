@@ -67,8 +67,6 @@ def selectMountain(driver, mountain):
 	contButton.click()
 
 def selectMonth(driver, month, year):
-	print("selecting: " + month)
-
 	# check what month is currently being checked on Ikon site.
 	try:
 		# wait for page to load
@@ -78,14 +76,9 @@ def selectMonth(driver, month, year):
 		print("Error: Timed out")
 		sys.exit()
 
-	print ("month being checked: " + monthBeingChecked.get_attribute('innerHTML'))
-
 	# loop through months until correct month is being checked. 
 	# Will start from month entered and increment until June 2021.
 	while (monthBeingChecked.get_attribute('innerHTML') != (month + ' ' + str(year))):
-		print("month being checked in loop: " + monthBeingChecked.get_attribute('innerHTML'))
-		print("month inputted:              " + month + ' ' + str(year))
-
 		# if we have reached June and that was not desired month, return
 		if monthBeingChecked.get_attribute('innerHTML') == ("June 2021") and month != "June":
 			print("Error: Failed to select month")
@@ -94,16 +87,13 @@ def selectMonth(driver, month, year):
 		# go to next month
 		nextMonthButton = driver.find_element(By.XPATH, '//i[@class="amp-icon icon-chevron-right"]')
 		nextMonthButton.click()
-		
+
 		try:
 			monthBeingChecked = WebDriverWait(driver, 20).until(
 			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-pckkE goPjwB"]')))
 		except:
 			print("Error: Timed out")
 			sys.exit()
-
-	print("month being checked in loop: " + monthBeingChecked.get_attribute('innerHTML'))
-	print("month inputted:              " + month + ' ' + str(year))
 
 def isAvailable(driver, month, day, year):
 	# parse monthInput since that is how it is labeled in the Ikon page HTML
