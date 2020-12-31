@@ -4,7 +4,7 @@ import ikonScraperInterface
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-HEADLESS = 0
+HEADLESS = 1
 
 """
 def constantCheck():
@@ -18,9 +18,6 @@ def main():
 	"""
 	# get user input for date and password
 	pwInput = sys.argv[1]
-	monthInput = sys.argv[2]
-	dayInput = sys.argv[3]
-	yearInput = sys.argv[4]
 
 	# initialize web driver
 	if (HEADLESS):
@@ -33,13 +30,16 @@ def main():
 	else:
 		driver = webdriver.Chrome()
 
+	# login to ikon website
 	ikonScraperInterface.login(driver, pwInput)
 
-	ikonScraperInterface.selectMountain(driver, "Arapahoe Basin")
-
-	#ikonScraperInterface.isAvailable(driver, monthInput, dayInput, yearInput)
-
+	# fill up database with date availability
 	ikonScraperInterface.addDatesToDB(driver)
+
+	# check for openings every minute
+	while(1):
+		ikonScraperInterface.checkForOpenings(driver)
+		#time.sleep(60)
 
 	# close driver
 	driver.quit()

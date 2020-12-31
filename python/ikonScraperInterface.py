@@ -15,6 +15,19 @@ from mysql.connector import errorcode
 
 # class name if the day is available
 AVAILABLE = 'DayPicker-Day'
+# mountains to check for availability
+mountainsToCheck = ["Arapahoe Basin"]
+# months to check for availability
+monthsToCheck = {
+	1: "January",
+	2: "February",
+	3: "March",
+	4: "April",
+	5: "May",
+	6: "June"
+}
+# year to check
+year = 2021
 
 def login(driver, password):
 	"""Logs into Ikon website and clicks the 'make reservation' button.
@@ -131,48 +144,83 @@ def addDatesToDB(driver):
 	"""Adds all reserved dates to the datesreserved table and all available
 	dates to the datesavailable table in the mtnrez MYSQL database.
 	"""
-	monthsToCheck = {
-		1: "January",
-		2: "February",
-		3: "March",
-		4: "April",
-		5: "May",
-		6: "June"
-	}
-	year = 2021
-	
 	# connect to database
-	mydb = mysql.connector.connect(
+	db = mysql.connector.connect(
 	  host="localhost",
 	  user="yourmom",
 	  password="Yourmom123!",
 	  database="mtnrez"
 	)
-	mycursor = mydb.cursor()
+	cursor = db.cursor()
 
-	# clear tables
+	# clear tables first
 	sql = "DELETE FROM datesavailable"
-	mycursor.execute(sql)
+	cursor.execute(sql)
 	sql = "DELETE FROM datesreserved"
-	mycursor.execute(sql)
+	cursor.execute(sql)
 
-	# check reserved dates. Only check Jan-June 
+	# check reserved dates for each mountain. Only check Jan-June 
 	# TODO: make this scalable to whatever current year is
-	for month in monthsToCheck:
-		# select month to check on ikon site
-		selectMonth(driver, monthsToCheck[month], year)
-		# check each days availability and insert into database tables
-		for day in range(1, calendar.monthrange(year, month)[1] + 1):
-			if isDayAvailable(driver, monthsToCheck[month], day, year):
-				sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
-				vals = ("Arapahoe Basin", monthsToCheck[month], str(day), str(year))
-				mycursor.execute(sql, vals)
-			else:
-				sql = "INSERT INTO datesreserved(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
-				vals = ("Arapahoe Basin", monthsToCheck[month], str(day), str(year))
-				mycursor.execute(sql, vals)
+	for mountain in mountainsToCheck:
+		selectMountain(driver, mountain)
+		for month in monthsToCheck:
+			selectMonth(driver, monthsToCheck[month], year)
+			# check each days availability and insert into database tables
+			for day in range(1, calendar.monthrange(year, month)[1] + 1):
+				if isDayAvailable(driver, monthsToCheck[month], day, year):
+					sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
+					vals = (mountain, monthsToCheck[month], str(day), str(year))
+					cursor.execute(sql, vals)
+				else:
+					sql = "INSERT INTO datesreserved(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
+					vals = (mountain, monthsToCheck[month], str(day), str(year))
+					cursor.execute(sql, vals)
 
-	mydb.commit()
-	mycursor.close()
+	db.commit()
+	cursor.close()
 
+def checkForOpenings(driver):
+	"""Checks if any reserved days have become open by scraping Ikon site and comparing
+	to the current stored reserved days in our database
+	"""
+	# reload reservation page to return to first month
+	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+	driver.get(url)
 
+	# connect to database
+	db = mysql.connector.connect(
+	  host="localhost",
+	  user="yourmom",
+	  password="Yourmom123!",
+	  database="mtnrez"
+	)
+	cursor = db.cursor()
+
+	# check current available dates to see if they weren't available in database
+	for mountain in mountainsToCheck:
+		selectMountain(driver, mountain)
+		for month in monthsToCheck:
+			selectMonth(driver, monthsToCheck[month], year)
+			# check each days availability and insert into database tables
+			for day in range(1, calendar.monthrange(year, month)[1] + 1):
+				if isDayAvailable(driver, monthsToCheck[month], day, year):
+					print( "here")
+					# check if this day is in the database as available
+					sql = "SELECT * FROM datesavailable WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
+					vals = (mountain, monthsToCheck[month], str(day), str(year))
+					cursor.execute(sql, vals)
+					# if not, update database and TODO: send email
+					if cursor.rowcount == 0:
+						sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
+						vals = (mountain, monthsToCheck[month], str(day), str(year))
+						cursor.execute(sql, vals)
+
+						sql = "DELETE FROM datesreserved(mountain, month, day, year) WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
+						vals = (mountain, monthsToCheck[month], str(day), str(year))
+						cursor.execute(sql, vals)
+						db.commit()
+					else:
+						print("day is already in database correct")
+
+	db.commit()
+	cursor.close()
