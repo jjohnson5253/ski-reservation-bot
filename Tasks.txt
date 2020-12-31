@@ -1,19 +1,12 @@
 TASKS:
 
--send email from python
-
--implement python email sending into app
-
--connect database to app
-
--create function to add all current reserved dates to database
-
--create function to compare all current dates to reserved dates in database
-	-then send email about which ones opened up, if any
-
 -create main loop that compares all current dates and sends emails
-	-run this every minute
 	-add check for time that sends me an email every day that server is still running
 	-add checks for when app program exits it sends me an email
 
 -make it so app starts on bootup of server
+
+-Secure the MYSQL PHP usage
+
+-Add database with users to alert
+	-unless we make mobile app, then it will just alert the phone

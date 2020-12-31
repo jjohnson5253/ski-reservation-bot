@@ -21,7 +21,7 @@ import emailInterface
 # class name if the day is available
 AVAILABLE = 'DayPicker-Day'
 # mountains to check for availability
-mountainsToCheck = ["Arapahoe Basin"]
+mountainsToCheck = ["Arapahoe Basin", "Aspen Snowmass", "Winter Park Resort"]
 # months to check for availability
 monthsToCheck = {
 	1: "January",
@@ -149,9 +149,6 @@ def addDatesToDB(driver):
 	"""Adds all reserved dates to the datesreserved table and all available
 	dates to the datesavailable table in the mtnrez MYSQL database.
 	"""
-	# reload reservation page to ensure we are on first month
-	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-	driver.get(url)
 
 	# connect to database
 	db = mysql.connector.connect(
@@ -171,6 +168,9 @@ def addDatesToDB(driver):
 	# check reserved dates for each mountain. Only check Jan-June 
 	# TODO: make this scalable to whatever current year is
 	for mountain in mountainsToCheck:
+		# reload to allow new mountain selection
+		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+		driver.get(url)
 		selectMountain(driver, mountain)
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
@@ -188,10 +188,7 @@ def checkForOpenings(driver):
 	"""Checks if any reserved days have become open by scraping Ikon site and comparing
 	to the current stored reserved days in our database
 	"""
-	# reload reservation page to ensure we are on first month
-	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-	driver.get(url)
-
+	
 	# connect to database
 	db = mysql.connector.connect(
 	  host="localhost",
@@ -203,6 +200,9 @@ def checkForOpenings(driver):
 
 	# check current available dates to see if they weren't available in database
 	for mountain in mountainsToCheck:
+		# reload to allow new mountain selection
+		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+		driver.get(url)
 		selectMountain(driver, mountain)
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
