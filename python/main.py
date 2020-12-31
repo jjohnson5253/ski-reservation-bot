@@ -1,17 +1,19 @@
+#
+# Copyright 2020 Jake Johnson and Preston Windfeldt
+# Filename: main.py
+# Purpose:  Main program that constantly checks if mountain
+#           reservations become available on the Ikon pass.
+#
+
 import sys
 import ikonScraperInterface
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import time
 
+# MACRO for if web driver should run in headless mode or not
+# Must be set to 1 if running on virtual server
 HEADLESS = 1
-
-"""
-def constantCheck():
-	while(1):
-		if (checkAvail.checkAvail(pwInput, monthInput, dayInput, yearInput) == true):
-			# send email and/or make reservation
-"""
 
 def main():	
 	"""Main function. TODO: update with what it does
@@ -26,7 +28,9 @@ def main():
 		options.add_argument('--disable-gpu')
 		options.add_argument("window-size=1024,768")
 		options.add_argument("--no-sandbox")
-		driver = webdriver.Chrome(chrome_options=options)
+		#options.add_argument("--disable-logging")
+		options.add_argument("--log-level=3");
+		driver = webdriver.Chrome(options=options)
 	else:
 		driver = webdriver.Chrome()
 
@@ -36,10 +40,15 @@ def main():
 	# fill up database with date availability
 	ikonScraperInterface.addDatesToDB(driver)
 
-	# check for openings every minute
+	# Constantly check for openings and update database afterward
 	while(1):
 		ikonScraperInterface.checkForOpenings(driver)
-		#time.sleep(60)
+		ikonScraperInterface.addDatesToDB(driver)
+
+		print("Still checking")
+
+		# do this every 30 seconds
+		time.sleep(30)
 
 	# close driver
 	driver.quit()
@@ -47,6 +56,5 @@ def main():
 	# quit app
 	sys.exit()
 	
-
 if __name__ == "__main__":
     main()

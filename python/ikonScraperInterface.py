@@ -1,6 +1,9 @@
-# Created: 12/21/2020
-# Author: Jake Johnson
-# usage: py checkAvail [password] [month] [day] [year]
+#
+# Copyright 2020 Jake Johnson and Preston Windfeldt
+# Filename: ikonScraperInterface.py
+# Purpose:  Provide web scraping interface for interacting with 
+#           Ikon website
+#
 
 import sys
 from selenium import webdriver
@@ -12,6 +15,8 @@ import calendar
 import mysql.connector
 from mysql.connector import Error
 from mysql.connector import errorcode
+import smtplib
+import emailInterface
 
 # class name if the day is available
 AVAILABLE = 'DayPicker-Day'
@@ -66,7 +71,7 @@ def selectMountain(driver, mountain):
 	except:
 		print("Error: Timed out")
 		sys.exit()
-	mountain.click();
+	driver.execute_script("arguments[0].click();", mountain)
 
 	# click 'Continue' button
 	try:
@@ -76,7 +81,7 @@ def selectMountain(driver, mountain):
 	except:
 		print("Error: Timed out")
 		sys.exit()
-	contButton.click()
+	driver.execute_script("arguments[0].click();", contButton)
 
 def selectMonth(driver, month, year):
 	"""Selects month by bringing scraper to the page displaying the dates for that
@@ -101,7 +106,7 @@ def selectMonth(driver, month, year):
 
 		# go to next month
 		nextMonthButton = driver.find_element(By.XPATH, '//i[@class="amp-icon icon-chevron-right"]')
-		nextMonthButton.click()
+		driver.execute_script("arguments[0].click();", nextMonthButton)
 
 		try:
 			monthBeingChecked = WebDriverWait(driver, 20).until(
@@ -134,16 +139,20 @@ def isDayAvailable(driver, month, day, year):
 
 	# print if day is available or not
 	if (dayElement.get_attribute('class') == AVAILABLE):
-		print(month + " " + dayFormatted + " AVAILABLE")
+		#print(month + " " + dayFormatted + " AVAILABLE")
 		return True
 	else:
-		print(month + " " + dayFormatted + " RESERVED")
+		#print(month + " " + dayFormatted + " RESERVED")
 		return False
 
 def addDatesToDB(driver):
 	"""Adds all reserved dates to the datesreserved table and all available
 	dates to the datesavailable table in the mtnrez MYSQL database.
 	"""
+	# reload reservation page to ensure we are on first month
+	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+	driver.get(url)
+
 	# connect to database
 	db = mysql.connector.connect(
 	  host="localhost",
@@ -151,7 +160,7 @@ def addDatesToDB(driver):
 	  password="Yourmom123!",
 	  database="mtnrez"
 	)
-	cursor = db.cursor()
+	cursor = db.cursor(buffered = True)
 
 	# clear tables first
 	sql = "DELETE FROM datesavailable"
@@ -171,10 +180,6 @@ def addDatesToDB(driver):
 					sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
 					vals = (mountain, monthsToCheck[month], str(day), str(year))
 					cursor.execute(sql, vals)
-				else:
-					sql = "INSERT INTO datesreserved(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
-					vals = (mountain, monthsToCheck[month], str(day), str(year))
-					cursor.execute(sql, vals)
 
 	db.commit()
 	cursor.close()
@@ -183,7 +188,7 @@ def checkForOpenings(driver):
 	"""Checks if any reserved days have become open by scraping Ikon site and comparing
 	to the current stored reserved days in our database
 	"""
-	# reload reservation page to return to first month
+	# reload reservation page to ensure we are on first month
 	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 	driver.get(url)
 
@@ -194,7 +199,7 @@ def checkForOpenings(driver):
 	  password="Yourmom123!",
 	  database="mtnrez"
 	)
-	cursor = db.cursor()
+	cursor = db.cursor(buffered = True)
 
 	# check current available dates to see if they weren't available in database
 	for mountain in mountainsToCheck:
@@ -204,23 +209,15 @@ def checkForOpenings(driver):
 			# check each days availability and insert into database tables
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
-					print( "here")
-					# check if this day is in the database as available
+					# check if this day is in the database already as available
 					sql = "SELECT * FROM datesavailable WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
 					vals = (mountain, monthsToCheck[month], str(day), str(year))
 					cursor.execute(sql, vals)
-					# if not, update database and TODO: send email
+					# if not, send email alert
 					if cursor.rowcount == 0:
-						sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
-						vals = (mountain, monthsToCheck[month], str(day), str(year))
-						cursor.execute(sql, vals)
-
-						sql = "DELETE FROM datesreserved(mountain, month, day, year) WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
-						vals = (mountain, monthsToCheck[month], str(day), str(year))
-						cursor.execute(sql, vals)
-						db.commit()
-					else:
-						print("day is already in database correct")
+						print("This day just became available!!!")
+						print(str(month) + " " + str(day))
+						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
 
 	db.commit()
 	cursor.close()
