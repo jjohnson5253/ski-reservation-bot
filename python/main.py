@@ -13,7 +13,9 @@ def constantCheck():
 			# send email and/or make reservation
 """
 
-def main():
+def main():	
+	"""Main function. TODO: update with what it does
+	"""
 	# get user input for date and password
 	pwInput = sys.argv[1]
 	monthInput = sys.argv[2]
@@ -37,13 +39,14 @@ def main():
 
 	#ikonScraperInterface.isAvailable(driver, monthInput, dayInput, yearInput)
 
-	ikonScraperInterface.addReservedDatesToDB(driver)
+	ikonScraperInterface.addDatesToDB(driver)
 
 	# close driver
-	#driver.quit()
+	driver.quit()
 
 	# quit app
-	#sys.exit()
+	sys.exit()
+	
 
 if __name__ == "__main__":
     main()

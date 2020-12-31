@@ -9,20 +9,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import calendar
-import time
-#import mysql.connector
+import mysql.connector
+from mysql.connector import Error
+from mysql.connector import errorcode
 
 # class name if the day is available
 AVAILABLE = 'DayPicker-Day'
-# number of days in each month TODO: use monthrange instead from calendar lib
-DAYS_IN_DECEMBER = 31
-DAYS_IN_JANUARY = 31
-DAYS_IN_FEBRUARY = 28
-DAYS_IN_MARCH = 31
-DAYS_IN_APRIL = 30
-DAYS_IN_MAY = 31
 
 def login(driver, password):
+	"""Logs into Ikon website and clicks the 'make reservation' button.
+	"""
 	# open login page
 	url = "https://account.ikonpass.com/en/login"
 	driver.get(url)
@@ -46,6 +42,9 @@ def login(driver, password):
 	driver.execute_script("arguments[0].click();", resButton)
 
 def selectMountain(driver, mountain):
+	"""Selects mountain on the 'make reservation' page. From here, selectMonth() and
+	then isDayAvailable() can be called.
+	"""
 	# select mountain
 	try:
 		# wait for page to load
@@ -67,6 +66,9 @@ def selectMountain(driver, mountain):
 	contButton.click()
 
 def selectMonth(driver, month, year):
+	"""Selects month by bringing scraper to the page displaying the dates for that
+	month.
+	"""
 	# check what month is currently being checked on Ikon site.
 	try:
 		# wait for page to load
@@ -95,7 +97,10 @@ def selectMonth(driver, month, year):
 			print("Error: Timed out")
 			sys.exit()
 
-def isAvailable(driver, month, day, year):
+def isDayAvailable(driver, month, day, year):
+	"""Checks if a day is available. The scraper must be on the make reservation
+	page with the dates available to check (ie selectMonth() must be called first).
+	"""
 	# parse monthInput since that is how it is labeled in the Ikon page HTML
 	month = month[0:3]
 
@@ -116,13 +121,16 @@ def isAvailable(driver, month, day, year):
 
 	# print if day is available or not
 	if (dayElement.get_attribute('class') == AVAILABLE):
-		print("This day is available")
+		print(month + " " + dayFormatted + " AVAILABLE")
 		return True
 	else:
-		print("This day is not available")
+		print(month + " " + dayFormatted + " RESERVED")
 		return False
 
-def addReservedDatesToDB(driver):
+def addDatesToDB(driver):
+	"""Adds all reserved dates to the datesreserved table and all available
+	dates to the datesavailable table in the mtnrez MYSQL database.
+	"""
 	monthsToCheck = {
 		1: "January",
 		2: "February",
@@ -131,34 +139,40 @@ def addReservedDatesToDB(driver):
 		5: "May",
 		6: "June"
 	}
-	months = [1,2,3,4,5,6]
 	year = 2021
-
-	"""
+	
 	# connect to database
 	mydb = mysql.connector.connect(
 	  host="localhost",
 	  user="yourmom",
-	  password="Yourmom123!"
+	  password="Yourmom123!",
+	  database="mtnrez"
 	)
 	mycursor = mydb.cursor()
-	"""
-	"""
-	mycursor.execute("INSERT INTO reservationchecks(mountain, month, day, year, email) 
-		VALUES ('".$_POST["mountain"]."','".$_POST["month"]."','".$_POST["day"]."',
-			'".$_POST["year"]."','".$_POST["email"]."')"")
-	"""
+
+	# clear tables
+	sql = "DELETE FROM datesavailable"
+	mycursor.execute(sql)
+	sql = "DELETE FROM datesreserved"
+	mycursor.execute(sql)
 
 	# check reserved dates. Only check Jan-June 
 	# TODO: make this scalable to whatever current year is
 	for month in monthsToCheck:
 		# select month to check on ikon site
 		selectMonth(driver, monthsToCheck[month], year)
-		# check each days availability
+		# check each days availability and insert into database tables
 		for day in range(1, calendar.monthrange(year, month)[1] + 1):
-			print (str(month) + " " + str(day))
-			isAvailable(driver, monthsToCheck[month], day, year)
+			if isDayAvailable(driver, monthsToCheck[month], day, year):
+				sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
+				vals = ("Arapahoe Basin", monthsToCheck[month], str(day), str(year))
+				mycursor.execute(sql, vals)
+			else:
+				sql = "INSERT INTO datesreserved(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
+				vals = ("Arapahoe Basin", monthsToCheck[month], str(day), str(year))
+				mycursor.execute(sql, vals)
 
-
+	mydb.commit()
+	mycursor.close()
 
 
