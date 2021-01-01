@@ -43,7 +43,6 @@ def main():
 	# Constantly check for openings and update database afterward
 	while(1):
 		ikonScraperInterface.checkForOpenings(driver)
-		#ikonScraperInterface.addDatesToDB(driver)
 
 		print("Still checking")
 

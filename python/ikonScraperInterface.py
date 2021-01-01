@@ -140,9 +140,6 @@ def isDayAvailable(driver, month, day, year):
 		print("Error: Timed out")
 		#sys.exit()
 
-	if month == "Jan" and day == 1:
-		print(dayElement.get_attribute('class'))
-
 	# print if day is available or not
 	if (dayElement.get_attribute('class') == AVAILABLE or dayElement.get_attribute('class') == AVAILABLE_TODAY):
 		#print(month + " " + dayFormatted + " AVAILABLE")
