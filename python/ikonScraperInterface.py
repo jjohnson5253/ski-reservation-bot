@@ -148,24 +148,10 @@ def isDayAvailable(driver, month, day, year):
 		#print(month + " " + dayFormatted + " RESERVED")
 		return False
 
-def addDatesToDB(driver):
+def addDatesToDB(driver, datesAvailable):
 	"""Adds all reserved dates to the datesreserved table and all available
 	dates to the datesavailable table in the mtnrez MYSQL database.
 	"""
-
-	# connect to database
-	db = mysql.connector.connect(
-	  host="localhost",
-	  user="yourmom",
-	  password="Yourmom123!",
-	  database="mtnrez"
-	)
-	cursor = db.cursor(buffered = True)
-
-	# clear tables first
-	sql = "DELETE FROM datesavailable"
-	cursor.execute(sql)
-
 	# check reserved dates for each mountain. Only check Jan-June 
 	# TODO: make this scalable to whatever current year is
 	for mountain in mountainsToCheck:
@@ -178,28 +164,13 @@ def addDatesToDB(driver):
 			# check each days availability and insert into database tables
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
-					sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
-					vals = (mountain, monthsToCheck[month], str(day), str(year))
-					cursor.execute(sql, vals)
+					datesAvailable.append([mountain, month, day, year])
 
-	db.commit()
-	cursor.close()
-
-def checkForOpenings(driver):
+def checkForOpenings(driver, datesAvailable):
 	"""Checks if any reserved days have become open by scraping Ikon site and comparing
 	to the current stored reserved days in our database
 	"""
-	
-	# connect to database
-	db = mysql.connector.connect(
-	  host="localhost",
-	  user="yourmom",
-	  password="Yourmom123!",
-	  database="mtnrez"
-	)
-	cursor = db.cursor(buffered = True)
-
-	# check current available dates to see if they weren't available in database
+	# check current available dates
 	for mountain in mountainsToCheck:
 		# reload to allow new mountain selection
 		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
@@ -207,37 +178,14 @@ def checkForOpenings(driver):
 		selectMountain(driver, mountain)
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
-			# check each days availability and insert into database tables
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
-					# check if this day is in the database already as available
-					sql = "SELECT * FROM datesavailable WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
-					vals = (mountain, monthsToCheck[month], str(day), str(year))
-					cursor.execute(sql, vals)
-					# if not, insert into db send email alert
-					if cursor.rowcount == 0:
-						print("This day just became available!!!")
-						print(str(month) + " " + str(day))
-
-						sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
-						vals = (mountain, monthsToCheck[month], str(day), str(year))
-						cursor.execute(sql, vals)
-
+					# if day is not stored as available, send alert and add to list
+					if [mountain, month, day, year] not in datesAvailable:
+						datesAvailable.append([mountain, month, day, year])
 						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
 						#############################emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
 				else:
-					# if not available, check if this day is in the database as available
-					sql = "SELECT * FROM datesavailable WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
-					vals = (mountain, monthsToCheck[month], str(day), str(year))
-					cursor.execute(sql, vals)
-					# if it is, delete it
-					if cursor.rowcount != 0:
-						print (type(day))
-						print (type(month))
-						print (type(year))
-						sql = "DELETE FROM datesavailable WHERE mountain = %s AND month =%s AND day = %s AND year = %s"
-						vals = (mountain, monthsToCheck[month], str(day), str(year))
-						cursor.execute(sql, vals)					
-
-	db.commit()
-	cursor.close()
+					# if day is stored as available but is no longer available, remove it from list
+					if [mountain, month, day, year] in datesAvailable:
+						datesAvailable.remove([mountain, month, day, year])

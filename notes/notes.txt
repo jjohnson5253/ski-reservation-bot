@@ -8,4 +8,5 @@ Now database is displayed out of order on website, since i am adding and deletin
 	-might want to reorder when printing out on HTML?
 
 ***Fix, why does it keep sending emails about the january 1st?
-	-seems to keep adding it and deleting it from date available
+	-seems to keep deleting it and then readding after 2-3 loops
+	-only happens on server, not on my pc...

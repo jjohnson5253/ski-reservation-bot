@@ -19,7 +19,7 @@ def main():
 	"""Main function. TODO: update with what it does
 	"""
 	# get user input for date and password
-	pwInput = sys.argv[1]
+	pwInput = "sys.argv[1]"
 
 	# initialize web driver
 	if (HEADLESS):
@@ -37,15 +37,17 @@ def main():
 	# login to ikon website
 	ikonScraperInterface.login(driver, pwInput)
 
+	# list to store available dates
+	availableDates = []
+
 	# fill up database with date availability
-	ikonScraperInterface.addDatesToDB(driver)
+	ikonScraperInterface.addDatesToDB(driver, availableDates)
 
 	# Constantly check for openings and update database afterward
 	while(1):
-		ikonScraperInterface.checkForOpenings(driver)
-
+		ikonScraperInterface.checkForOpenings(driver, availableDates)
 		print("Still checking")
-		time.sleep(5)
+		time.sleep(2)
 
 	# close driver
 	driver.quit()
