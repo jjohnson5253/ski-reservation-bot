@@ -140,6 +140,9 @@ def isDayAvailable(driver, month, day, year):
 		print("Error: Timed out")
 		#sys.exit()
 
+	if month == "Jan" and day == 1:
+		print(dayElement.get_attribute('class'))
+
 	# print if day is available or not
 	if (dayElement.get_attribute('class') == AVAILABLE or dayElement.get_attribute('class') == AVAILABLE_TODAY):
 		#print(month + " " + dayFormatted + " AVAILABLE")
@@ -216,12 +219,27 @@ def checkForOpenings(driver):
 					sql = "SELECT * FROM datesavailable WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
 					vals = (mountain, monthsToCheck[month], str(day), str(year))
 					cursor.execute(sql, vals)
-					# if not, send email alert
+					# if not, insert into db send email alert
 					if cursor.rowcount == 0:
 						print("This day just became available!!!")
 						print(str(month) + " " + str(day))
+
+						sql = "INSERT INTO datesavailable(mountain, month, day, year) VALUES (%s, %s, %s, %s)"
+						vals = (mountain, monthsToCheck[month], str(day), str(year))
+						cursor.execute(sql, vals)
+
 						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
-						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
+						#############################emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
+				else:
+					# if not available, check if this day is in the database as available
+					sql = "SELECT * FROM datesavailable WHERE (mountain, month, day, year) = (%s, %s, %s, %s)"
+					vals = (mountain, monthsToCheck[month], str(day), str(year))
+					cursor.execute(sql, vals)
+					# if it is, delete it
+					if cursor.rowcount != 0:
+						sql = "DELETE FROM datesavailable WHERE mountain = %s AND month =%s AND day = %s AND year = %s"
+						vals = (mountain, monthsToCheck[month], str(day), str(year))
+						cursor.execute(sql, vals)					
 
 	db.commit()
 	cursor.close()
