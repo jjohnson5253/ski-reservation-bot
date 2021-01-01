@@ -44,7 +44,7 @@ def main():
 	ikonScraperInterface.addDatesToDB(driver, availableDates)
 
 	# Constantly check for openings and update database afterward
-	while(1):
+	while(True):
 		ikonScraperInterface.checkForOpenings(driver, availableDates)
 		print("Still checking")
 		time.sleep(2)
