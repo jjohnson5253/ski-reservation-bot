@@ -1,3 +1,11 @@
 12.31:
 
 Using "tmux" to run python app in background and while I log off on server
+
+1.1
+
+Now database is displayed out of order on website, since i am adding and deleting on each change
+	-might want to reorder when printing out on HTML?
+
+***Fix, why does it keep sending emails about the january 1st?
+	-seems to keep adding it and deleting it from date available

@@ -165,8 +165,6 @@ def addDatesToDB(driver):
 	# clear tables first
 	sql = "DELETE FROM datesavailable"
 	cursor.execute(sql)
-	sql = "DELETE FROM datesreserved"
-	cursor.execute(sql)
 
 	# check reserved dates for each mountain. Only check Jan-June 
 	# TODO: make this scalable to whatever current year is
@@ -234,6 +232,9 @@ def checkForOpenings(driver):
 					cursor.execute(sql, vals)
 					# if it is, delete it
 					if cursor.rowcount != 0:
+						print (type(day))
+						print (type(month))
+						print (type(year))
 						sql = "DELETE FROM datesavailable WHERE mountain = %s AND month =%s AND day = %s AND year = %s"
 						vals = (mountain, monthsToCheck[month], str(day), str(year))
 						cursor.execute(sql, vals)					
