@@ -20,6 +20,9 @@ import emailInterface
 
 # class name if the day is available
 AVAILABLE = 'DayPicker-Day'
+# class name if available and day is today
+AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
+
 # mountains to check for availability
 mountainsToCheck = ["Arapahoe Basin", "Aspen Snowmass", "Winter Park Resort"]
 # months to check for availability
@@ -138,7 +141,7 @@ def isDayAvailable(driver, month, day, year):
 		#sys.exit()
 
 	# print if day is available or not
-	if (dayElement.get_attribute('class') == AVAILABLE):
+	if (dayElement.get_attribute('class') == AVAILABLE or dayElement.get_attribute('class') == AVAILABLE_TODAY):
 		#print(month + " " + dayFormatted + " AVAILABLE")
 		return True
 	else:
@@ -218,6 +221,7 @@ def checkForOpenings(driver):
 						print("This day just became available!!!")
 						print(str(month) + " " + str(day))
 						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
+						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
 
 	db.commit()
 	cursor.close()

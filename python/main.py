@@ -47,9 +47,6 @@ def main():
 
 		print("Still checking")
 
-		# do this every 30 seconds
-		time.sleep(30)
-
 	# close driver
 	driver.quit()
 
