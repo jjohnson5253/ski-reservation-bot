@@ -148,9 +148,8 @@ def isDayAvailable(driver, month, day, year):
 		#print(month + " " + dayFormatted + " RESERVED")
 		return False
 
-def addDatesToDB(driver, datesAvailable):
-	"""Adds all reserved dates to the datesreserved table and all available
-	dates to the datesavailable table in the mtnrez MYSQL database.
+def addAvailableDatesToList(driver, datesAvailable):
+	"""Scrapes Ikon site and adds available dates to list.
 	"""
 	# check reserved dates for each mountain. Only check Jan-June 
 	# TODO: make this scalable to whatever current year is
@@ -161,14 +160,14 @@ def addDatesToDB(driver, datesAvailable):
 		selectMountain(driver, mountain)
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
-			# check each days availability and insert into database tables
+			# check each days availability and add to list
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
 					datesAvailable.append([mountain, month, day, year])
 
 def checkForOpenings(driver, datesAvailable):
-	"""Checks if any reserved days have become open by scraping Ikon site and comparing
-	to the current stored reserved days in our database
+	"""Checks if any reserved days have become available by scraping Ikon site and comparing
+	to the current stored available dates in our list
 	"""
 	# check current available dates
 	for mountain in mountainsToCheck:
@@ -184,7 +183,7 @@ def checkForOpenings(driver, datesAvailable):
 					if [mountain, month, day, year] not in datesAvailable:
 						datesAvailable.append([mountain, month, day, year])
 						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
-						#############################emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
+						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
 				else:
 					# if day is stored as available but is no longer available, remove it from list
 					if [mountain, month, day, year] in datesAvailable:

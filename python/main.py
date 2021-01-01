@@ -40,10 +40,10 @@ def main():
 	# list to store available dates
 	availableDates = []
 
-	# fill up database with date availability
-	ikonScraperInterface.addDatesToDB(driver, availableDates)
+	# fill up list
+	ikonScraperInterface.addAvailableDatesToList(driver, availableDates)
 
-	# Constantly check for openings and update database afterward
+	# Constantly check for openings in reservations
 	while(True):
 		ikonScraperInterface.checkForOpenings(driver, availableDates)
 		print("Still checking")
