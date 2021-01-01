@@ -45,6 +45,7 @@ def main():
 		ikonScraperInterface.checkForOpenings(driver)
 
 		print("Still checking")
+		time.sleep(5)
 
 	# close driver
 	driver.quit()
