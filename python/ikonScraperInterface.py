@@ -174,8 +174,11 @@ def addAvailableDatesToList(driver, datesAvailable):
 
 def checkForOpenings(driver, datesAvailable):
 	"""Checks if any reserved days have become available by scraping Ikon site and comparing
-	to the current stored available dates in our list
+	to the current stored available dates in our list. Reserves days that are set in database
+	if they become available.
 	"""
+	# First check Brighton availability
+	checkBrighton(driver)
 
 	# connect to database
 	db = mysql.connector.connect( host="localhost", user="yourmom", 
@@ -292,3 +295,20 @@ def reserveDay(driver, month, day, year):
 	# return to make reservation page
 	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 	driver.get(url)
+
+def checkBrighton(driver):
+	"""Checks for Febraury 27 of Brighton availability and reserves if available
+	"""
+	# reload to allow new mountain selection
+	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+	driver.get(url)
+
+	selectMountain(driver, "Brighton")
+
+	selectMonth(driver, monthsToCheck[2], 2021)
+
+	if isDayAvailable(driver, monthsToCheck[2], 27, year):
+		# reserve day
+		reserveDay(driver, monthsToCheck[2], 27, year)
+		# send alert
+		emailInterface.sendEmailAlert("jjohnson11096@gmail.com", "Brighton", monthsToCheck[2], "27", "2021", "Saturday")

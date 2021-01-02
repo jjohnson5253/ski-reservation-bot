@@ -13,7 +13,7 @@ import time
 
 # MACRO for if web driver should run in headless mode or not
 # Must be set to 1 if running on virtual server
-HEADLESS = 1
+HEADLESS = 0
 
 def main():	
 	"""Main function. TODO: update with what it does
