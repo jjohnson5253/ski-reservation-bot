@@ -24,7 +24,14 @@ import datetime
 AVAILABLE = 'DayPicker-Day'
 # class name if available and day is today
 AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
-
+# SQL username
+SQL_USERNAME = "reserver"
+# SQL password
+SQL_PASSWORD = "PurpleNapkin*^"
+# SQL database
+SQL_DB = "mtnrez"
+# SQL host
+SQL_HOST = "localhost"
 # mountains to check for availability
 mountainsToCheck = ["Arapahoe Basin", "Winter Park Resort"]
 # months to check for availability
@@ -181,8 +188,8 @@ def checkForOpenings(driver, datesAvailable):
 	checkBrighton(driver)
 
 	# connect to database
-	db = mysql.connector.connect( host="localhost", user="yourmom", 
-		 password="Yourmom123!", database="mtnrez")
+	db = mysql.connector.connect( host="SQL_HOST", user="SQL_USERNAME", 
+		 password="SQL_PASSWORD", database="SQL_DB")
 	cursor = db.cursor(buffered = True)
 
 	# check current available dates
