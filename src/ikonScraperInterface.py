@@ -27,7 +27,7 @@ AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
 # SQL username
 SQL_USERNAME = "reserver"
 # SQL password
-SQL_PASSWORD = "PurpleNapkin*^"
+SQL_PASSWORD = "PurpleNapkin$"
 # SQL database
 SQL_DB = "mtnrez"
 # SQL host
@@ -52,7 +52,7 @@ def login(driver, password):
 	# open login page
 	url = "https://account.ikonpass.com/en/login"
 	driver.get(url)
-	print(password)
+	
 	# send login parameters
 	username = driver.find_element_by_name('email')
 	username.send_keys('jjohnson11096@gmail.com')

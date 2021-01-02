@@ -1,3 +1,5 @@
+# Copyright 2021 Jake Johnson and Preston Windfeldt
+
 import smtplib
 
 def sendEmailAlert(toAddress, mountain, month, day, year, dayOfWeek):
