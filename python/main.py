@@ -19,8 +19,8 @@ def main():
 	"""Main function. TODO: update with what it does
 	"""
 	# get user input for date and password
-	pwInput = "sys.argv[1]"
-
+	pwInput = sys.argv[1]
+	
 	# initialize web driver
 	if (HEADLESS):
 		options = Options()
@@ -39,15 +39,13 @@ def main():
 
 	# list to store available dates
 	availableDates = []
-	# dates to reserve if they become available
-	datesToReserve = [["Aspen Snowmass", 1, 27, 2021], ["Arapahoe Basin", 1, 9, 2021], ["Arapahoe Basin", 1, 30, 2021]]
 
 	# fill up list
 	ikonScraperInterface.addAvailableDatesToList(driver, availableDates)
 
 	# Constantly check for openings in reservations
 	while(True):
-		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve)
+		ikonScraperInterface.checkForOpenings(driver, availableDates)
 		print("Still checking")
 		time.sleep(2)
 
