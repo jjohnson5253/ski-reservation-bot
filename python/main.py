@@ -13,7 +13,7 @@ import time
 
 # MACRO for if web driver should run in headless mode or not
 # Must be set to 1 if running on virtual server
-HEADLESS = 1
+HEADLESS = 0
 
 def main():	
 	"""Main function. TODO: update with what it does
@@ -39,13 +39,15 @@ def main():
 
 	# list to store available dates
 	availableDates = []
+	# dates to reserve if they become available
+	datesToReserve = [["Aspen Snowmass", 1, 27, 2021], ["Arapahoe Basin", 1, 9, 2021], ["Arapahoe Basin", 1, 30, 2021]]
 
 	# fill up list
 	ikonScraperInterface.addAvailableDatesToList(driver, availableDates)
 
 	# Constantly check for openings in reservations
 	while(True):
-		ikonScraperInterface.checkForOpenings(driver, availableDates)
+		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve)
 		print("Still checking")
 		time.sleep(2)
 
@@ -54,6 +56,6 @@ def main():
 
 	# quit app
 	sys.exit()
-	
+
 if __name__ == "__main__":
     main()

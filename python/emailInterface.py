@@ -1,6 +1,6 @@
 import smtplib
 
-def sendEmailAlert(toAddress, mountain, month, day, year):
+def sendEmailAlert(toAddress, mountain, month, day, year, dayOfWeek):
 	"""Sends an email using smtp.
 	"""
 	FROMADDR = "mtnrezalert@gmail.com"
@@ -10,7 +10,7 @@ def sendEmailAlert(toAddress, mountain, month, day, year):
 
 	msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n"
 	       % (FROMADDR, ", ".join(TOADDRS), SUBJECT) )
-	msg += mountain + " on " + month + " " + day + ", " + year + " opened up!!!\r\n"
+	msg += mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year + " opened up!!!\r\n"
 
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.set_debuglevel(1)

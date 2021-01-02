@@ -10,3 +10,10 @@ Now database is displayed out of order on website, since i am adding and deletin
 ***Fix, why does it keep sending emails about the january 1st?
 	-seems to keep deleting it and then readding after 2-3 loops
 	-only happens on server, not on my pc...
+
+-Add to app:
+	dates to reserve if open list
+	func that reserve dates if open
+
+-We can just copy the XPATH from developer tools inspect (right click->copy->xpath) and
+	paste into element to search for in selenium code

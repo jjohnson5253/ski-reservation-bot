@@ -17,6 +17,8 @@ from mysql.connector import Error
 from mysql.connector import errorcode
 import smtplib
 import emailInterface
+import time
+import datetime
 
 # class name if the day is available
 AVAILABLE = 'DayPicker-Day'
@@ -59,7 +61,6 @@ def login(driver, password):
 	except:
 		print("Error: Timed out")
 		sys.exit()
-	# use a javascript click, the selenium click not working
 	driver.execute_script("arguments[0].click();", resButton)
 
 def selectMountain(driver, mountain):
@@ -138,7 +139,7 @@ def isDayAvailable(driver, month, day, year):
 	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
 	except:
 		print("Error: Timed out")
-		#sys.exit()
+		sys.exit()
 
 	# print if day is available or not
 	if (dayElement.get_attribute('class') == AVAILABLE or dayElement.get_attribute('class') == AVAILABLE_TODAY):
@@ -165,7 +166,7 @@ def addAvailableDatesToList(driver, datesAvailable):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
 					datesAvailable.append([mountain, month, day, year])
 
-def checkForOpenings(driver, datesAvailable):
+def checkForOpenings(driver, datesAvailable, datesToReserve):
 	"""Checks if any reserved days have become available by scraping Ikon site and comparing
 	to the current stored available dates in our list
 	"""
@@ -175,16 +176,104 @@ def checkForOpenings(driver, datesAvailable):
 		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 		driver.get(url)
 		selectMountain(driver, mountain)
+
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
+
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
-					# if day is not stored as available, send alert and add to list
+					# reserve day if desired
+					if [mountain, month, day, year] in datesToReserve:
+						reserveDay(driver, monthsToCheck[month], day, year)
+						# refresh scraper
+						selectMountain(driver, mountain)
+						selectMonth(driver, monthsToCheck[month], year)
+						# remove from list
+						datesToReserve.remove([mountain, month, day, year])
+
+					# if day is not stored as available send alert, add to available dates
 					if [mountain, month, day, year] not in datesAvailable:
+						# get day of week
+						dayOfWeek = datetime.date(year, month, day).strftime("%A")
+						# send alerts
+						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
+						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
+						# add to list
 						datesAvailable.append([mountain, month, day, year])
-						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
-						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year))
 				else:
 					# if day is stored as available but is no longer available, remove it from list
 					if [mountain, month, day, year] in datesAvailable:
 						datesAvailable.remove([mountain, month, day, year])
+
+def reserveDay(driver, month, day, year):
+	"""Reserves a day in Ikon if available.
+	"""
+	# parse monthInput since that is how it is labeled in the Ikon page HTML
+	month = month[0:3]
+
+	# format day, if it's single digits, prepend with 0 since that is Ikon's site format
+	dayFormatted = str(day)
+	if (day < 10):
+		dayFormatted = "0" + dayFormatted
+
+	# Select the day
+	# if available
+	try:
+		# wait for page to load
+		dayElement = WebDriverWait(driver, 20).until(
+	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
+	except:
+		print("Error: Timed out")
+		sys.exit()
+
+	driver.execute_script("arguments[0].click();", dayElement)
+
+	# click save button
+	try:
+		# wait for page to load
+		saveButton = WebDriverWait(driver, 20).until(
+		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
+	except:
+		print("Error: Timed out no save")
+		sys.exit()
+	driver.execute_script("arguments[0].click();", saveButton)
+
+	# give time for button click
+	time.sleep(1)
+
+	# click confirm button
+	try:
+		# wait for page to load
+		confirmButton = WebDriverWait(driver, 20).until(
+		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
+	except:
+		print("Error: Timed out no confirm")
+		sys.exit()
+	driver.execute_script("arguments[0].click();", confirmButton)
+
+	# click confirm checkbox
+	try:
+		# wait for page to load
+		confirmCheckbox = WebDriverWait(driver, 20).until(
+		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
+	except:
+		print("Error: Timed out no checkbox")
+		sys.exit()
+	driver.execute_script("arguments[0].click();", confirmCheckbox)
+
+	# give time for button click
+	time.sleep(1)
+
+	# click confirm button again
+	try:
+		# wait for page to load
+		confirmButton = WebDriverWait(driver, 20).until(
+		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
+	except:
+		print("Error: Timed out no checkbox")
+		sys.exit()
+	driver.execute_script("arguments[0].click();", confirmButton)
+
+	# return to make reservation page
+	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+	driver.get(url)
