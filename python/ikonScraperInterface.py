@@ -307,8 +307,8 @@ def checkBrighton(driver):
 
 	selectMonth(driver, monthsToCheck[2], 2021)
 
-	if isDayAvailable(driver, monthsToCheck[2], 27, year):
+	if isDayAvailable(driver, monthsToCheck[2], 25, year):
 		# reserve day
-		reserveDay(driver, monthsToCheck[2], 27, year)
+		reserveDay(driver, monthsToCheck[2], 25, year)
 		# send alert
 		emailInterface.sendEmailAlert("jjohnson11096@gmail.com", "Brighton", monthsToCheck[2], "27", "2021", "Saturday")
