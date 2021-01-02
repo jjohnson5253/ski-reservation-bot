@@ -217,7 +217,7 @@ def checkForOpenings(driver, datesAvailable):
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alerts
-						emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
+						emailInterface.sendEmailAlert("mantoadgoat@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
 						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
 						# add to list
 						datesAvailable.append([mountain, month, day, year])
