@@ -21,16 +21,5 @@ os.system('wget https://selenium-release.storage.googleapis.com/3.13/selenium-se
 os.system('wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip')
 os.system('unzip testng-6.8.7.jar.zip')
 
-# install mysql
-os.system('python3 -m pip3 mysql')
-
-# run sql
-os.system('mysql')
-os.system("CREATE USER 'reserver'@'localhost' IDENTIFIED BY '78Purple%Napkin*';")
-os.system("GRANT ALL PRIVILEGES ON * . * TO 'reserver'@'localhost';")
-os.system("FLUSH PRIVILEGES;")
-os.system("CREATE DATABASE mtnrez;")
-os.system("CREATE TABLE datesToReserve(month int, day int, year int);")
-
-# run do we need this???
-#os.system('xvfb-run java -Dwebdriver.chrome.driver=/usr/bin/chromedriver -jar selenium-server-standalone.jar')
+# run selenium. User should ctrl-c out of this once its running
+os.system('xvfb-run java -Dwebdriver.chrome.driver=/usr/bin/chromedriver -jar selenium-server-standalone-3.13.0.jar &')
