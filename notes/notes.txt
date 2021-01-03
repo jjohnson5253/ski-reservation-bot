@@ -1,6 +1,6 @@
 12.31:
 
-Using "tmux" to run python app in background and while I log off on server
+-can use "tmux" to run python app in background and while I log off on server
 
 1.1
 
@@ -18,3 +18,27 @@ Using "tmux" to run python app in background and while I log off on server
 
 -We can just copy the XPATH from developer tools inspect (right click->copy->xpath) and
 	paste into element to search for in selenium code
+
+1.2
+
+to see if code is running on rc.local:
+	$sudo systemctl status rc-local.servicesudo systemctl status rc-local.service
+
+-----------------------------------------------------------------------------------------------
+To get code running on bootup of ubuntu:
+
+-https://askubuntu.com/questions/299792/why-is-the-command-in-etc-rc-local-not-executed-during-startup
+-add path to python script in bottom of /etc/rc.local with sudo and an & at the end.
+	ie: sudo python3 /home/jjohnson/dev/auto_mountain_reserver/src/main.py jjohnson11096@gmail.com Snoopy123! &
+-enable rc local service on startup:
+	$sudo chmod +x /etc/rc.local
+	$sudo systemctl enable rc-local.service
+-reboot the system:
+	$sudo reboot
+-to see if code is running on rc.local:
+	$sudo systemctl status rc-local.servicesudo systemctl status rc-local.service
+-----------------------------------------------------------------------------------------------
+
+
+
+
