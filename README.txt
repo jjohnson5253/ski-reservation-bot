@@ -1,12 +1,12 @@
-Created by Jake Johnson and Preston Windfeldt in 2021
+Created by Jake Johnson and Preston Windfeldt
 
-<h3>Description</h3>
+Description
 
 Software for automatically reserving Ikon mountain reservations when they become available. This uses python3, mysql, and selenium.
 
-<h3>Installation</h3>
+Installation
 
-<h4>Ubuntu</h4>
+Ubuntu
 * install python3
 	$sudo apt-get install python3
 * install pip
@@ -36,7 +36,7 @@ Software for automatically reserving Ikon mountain reservations when they become
 	$rm testng-6.8.7.jar
 	$rm testng-6.8.7.jar.zip
 
-<h4>Windows</h4>
+Windows
 -install python3
 -install selenium
 	-$py -m pip3 install selenium
