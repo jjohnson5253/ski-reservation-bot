@@ -8,7 +8,7 @@ from mysql.connector import errorcode
 # SQL username
 SQL_USERNAME = "reserver"
 # SQL password
-SQL_PASSWORD = "PurpleNapkin$"
+SQL_PASSWORD = "PurpleNapkin111$"
 # SQL database
 SQL_DB = "mtnrez"
 # SQL host

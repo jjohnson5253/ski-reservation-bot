@@ -27,7 +27,7 @@ AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
 # SQL username
 SQL_USERNAME = "reserver"
 # SQL password
-SQL_PASSWORD = "PurpleNapkin$"
+SQL_PASSWORD = "PurpleNapkin111$"
 # SQL database
 SQL_DB = "mtnrez"
 # SQL host
@@ -184,8 +184,6 @@ def checkForOpenings(driver, datesAvailable):
 	to the current stored available dates in our list. Reserves days that are set in database
 	if they become available.
 	"""
-	# First check Brighton availability
-	checkBrighton(driver)
 
 	# connect to database
 	db = mysql.connector.connect( host="SQL_HOST", user="SQL_USERNAME", 
@@ -303,19 +301,21 @@ def reserveDay(driver, month, day, year):
 	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 	driver.get(url)
 
-def checkBrighton(driver):
-	"""Checks for Febraury 27 of Brighton availability and reserves if available
+def checkSpecificReservation(driver, mountain, month, day, year):
+	"""Checks for specific reservation and reserves if available
 	"""
 	# reload to allow new mountain selection
 	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 	driver.get(url)
 
-	selectMountain(driver, "Brighton")
+	selectMountain(driver, mountain)
 
-	selectMonth(driver, monthsToCheck[2], 2021)
+	selectMonth(driver, monthsToCheck[month], year)
 
-	if isDayAvailable(driver, monthsToCheck[2], 27, year):
+	if isDayAvailable(driver, monthsToCheck[month], day, year):
 		# reserve day
-		reserveDay(driver, monthsToCheck[2], 27, year)
+		reserveDay(driver, monthsToCheck[month], day, year)
+		# get day of week
+		dayOfWeek = datetime.date(year, month, day).strftime("%A")
 		# send alert
-		emailInterface.sendEmailAlert("jjohnson11096@gmail.com", "Brighton", monthsToCheck[2], "27", "2021", "Saturday")
+		emailInterface.sendEmailAlert("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
