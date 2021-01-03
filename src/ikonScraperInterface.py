@@ -46,7 +46,7 @@ monthsToCheck = {
 # year to check
 year = 2021
 
-def login(driver, password):
+def login(driver):
 	"""Logs into Ikon website and clicks the 'make reservation' button.
 	"""
 	# open login page
@@ -55,9 +55,9 @@ def login(driver, password):
 	
 	# send login parameters
 	username = driver.find_element_by_name('email')
-	username.send_keys('jjohnson11096@gmail.com')
+	username.send_keys(sys.argv[1])
 	password = driver.find_element_by_name('password')
-	password.send_keys(sys.argv[1])
+	password.send_keys(sys.argv[2])
 	password.send_keys(Keys.RETURN)
 
 	# click 'Make a Reservation' button
@@ -209,21 +209,17 @@ def checkForOpenings(driver, datesAvailable):
 					# if not, insert into db send email alert
 					if cursor.rowcount != 0:
 						reserveDay(driver, monthsToCheck[month], day, year)
+						emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
 						# refresh scraper
 						selectMountain(driver, mountain)
 						selectMonth(driver, monthsToCheck[month], year)
-						# remove from table
-						sql = "DELETE FROM datesToReserve WHERE month = %s AND day = %s AND year = %s"
-						vals = (month, day, year)
-						cursor.execute(sql, vals)
 
 					# if day is not stored as available send alert, add to available dates
 					if [mountain, month, day, year] not in datesAvailable:
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alerts
-						emailInterface.sendEmailAlert("mantoadgoat@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
-						emailInterface.sendEmailAlert("prestonwindfeldt@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
+						emailInterface.sendReservationOpenAlertEmail("mantoadgoat@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
 						# add to list
 						datesAvailable.append([mountain, month, day, year])
 				else:

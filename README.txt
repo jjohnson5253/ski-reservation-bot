@@ -4,12 +4,18 @@ Description
 
 Software for automatically reserving Ikon mountain reservations when they become available. This uses python3, mysql, and selenium.
 
+Usage
+
+-Run src/main.py [email] [password] with from top directory of project with python3
+-Use email and password for the Ikon account to make reservations on
+-Change the email used in the email alerts to whatever email you want
+
 Installation
 
 Ubuntu
-* install python3
+-install python3
 	$sudo apt-get install python3
-* install pip
+-install pip
 	$sudo apt-get install python3-pip
 -install selenium for python
 	$py -m pip3 install selenium

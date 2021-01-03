@@ -18,9 +18,6 @@ HEADLESS = 1
 def main():	
 	"""Main function. TODO: update with what it does
 	"""
-	# get user input for date and password
-	pwInput = sys.argv[1]
-	
 	# initialize web driver
 	if (HEADLESS):
 		options = Options()
@@ -35,7 +32,7 @@ def main():
 		driver = webdriver.Chrome()
 
 	# login to ikon website
-	ikonScraperInterface.login(driver, pwInput)
+	ikonScraperInterface.login(driver)
 
 	# list to store available dates
 	availableDates = []
