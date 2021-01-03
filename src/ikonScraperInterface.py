@@ -209,6 +209,9 @@ def checkForOpenings(driver, datesAvailable):
 					# if not, insert into db send email alert
 					if cursor.rowcount != 0:
 						reserveDay(driver, monthsToCheck[month], day, year)
+						# get day of week
+						dayOfWeek = datetime.date(year, month, day).strftime("%A")
+						# send alert
 						emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek)
 						# refresh scraper
 						selectMountain(driver, mountain)
