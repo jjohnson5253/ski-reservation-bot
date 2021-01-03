@@ -20,8 +20,8 @@ day = sys.argv[2]
 year = sys.argv[3]
 
 # connect to database
-db = mysql.connector.connect( host="SQL_HOST", user="SQL_USERNAME", 
-	 password="SQL_PASSWORD", database="SQL_DB")
+db = mysql.connector.connect( host=SQL_HOST, user=SQL_USERNAME, 
+	 password=SQL_PASSWORD, database=SQL_DB)
 cursor = db.cursor(buffered = True)
 
 # add to database
