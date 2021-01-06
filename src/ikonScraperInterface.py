@@ -250,18 +250,18 @@ def reserveDay(driver, month, day, year):
 		# wait for page to load
 		dayElement = WebDriverWait(driver, 20).until(
 	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
+	    driver.execute_script("arguments[0].click();", dayElement)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
-	driver.execute_script("arguments[0].click();", dayElement)
 
 	# click save button
 	try:
 		# wait for page to load
 		saveButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
+		driver.execute_script("arguments[0].click();", saveButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
-	driver.execute_script("arguments[0].click();", saveButton)
 
 	# give time for button click
 	time.sleep(1)
@@ -271,18 +271,21 @@ def reserveDay(driver, month, day, year):
 		# wait for page to load
 		confirmButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
+		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
-	driver.execute_script("arguments[0].click();", confirmButton)
 
+	# give time for button click
+	time.sleep(1)
+	
 	# click confirm checkbox
 	try:
 		# wait for page to load
 		confirmCheckbox = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
+		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
-	driver.execute_script("arguments[0].click();", confirmCheckbox)
 
 	# give time for button click
 	time.sleep(1)
@@ -292,9 +295,9 @@ def reserveDay(driver, month, day, year):
 		# wait for page to load
 		confirmButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
+		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
-	driver.execute_script("arguments[0].click();", confirmButton)
 
 	# return to make reservation page
 	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
