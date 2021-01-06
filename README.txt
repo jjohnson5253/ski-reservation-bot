@@ -9,6 +9,7 @@ Usage
 -Run src/main.py [email] [password] with from top directory of project with python3
 -Use email and password for the Ikon account to make reservations on
 -Change the email used in the email alerts to whatever email you want
+-Use the python scripts under sql/ to add or remove dates you want to automatically reserve
 
 Installation
 
