@@ -249,8 +249,8 @@ def reserveDay(driver, month, day, year):
 	try:
 		# wait for page to load
 		dayElement = WebDriverWait(driver, 20).until(
-	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
-	    driver.execute_script("arguments[0].click();", dayElement)
+		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
+		driver.execute_script("arguments[0].click();", dayElement)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
 
