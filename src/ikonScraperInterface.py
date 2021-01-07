@@ -105,7 +105,7 @@ def selectMonth(driver, month, year):
 	try:
 		# wait for page to load
 		monthBeingChecked = WebDriverWait(driver, 20).until(
-		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-pckkE goPjwB"]')))
+		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 	except:
 		print("Error: Timed out")
 		emailInterface.sendErrorEmail("Error selecting month")		
@@ -125,7 +125,7 @@ def selectMonth(driver, month, year):
 
 		try:
 			monthBeingChecked = WebDriverWait(driver, 20).until(
-			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-pckkE goPjwB"]')))
+			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 		except:
 			print("Error: Timed out")
 			emailInterface.sendErrorEmail("Error selecting month")
@@ -209,6 +209,9 @@ def checkForOpenings(driver, datesAvailable):
 					# if not, insert into db send email alert
 					if cursor.rowcount != 0:
 						reserveDay(driver, monthsToCheck[month], day, year)
+						# return to make reservation page
+						url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+						driver.get(url)
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alert
@@ -253,6 +256,7 @@ def reserveDay(driver, month, day, year):
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
+		return
 
 	# click save button
 	try:
@@ -262,6 +266,7 @@ def reserveDay(driver, month, day, year):
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
+		return
 
 	# give time for button click
 	time.sleep(1)
@@ -274,6 +279,7 @@ def reserveDay(driver, month, day, year):
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
+		return
 
 	# give time for button click
 	time.sleep(1)
@@ -286,6 +292,7 @@ def reserveDay(driver, month, day, year):
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
+		return
 
 	# give time for button click
 	time.sleep(1)
@@ -298,10 +305,7 @@ def reserveDay(driver, month, day, year):
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving day")
-
-	# return to make reservation page
-	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-	driver.get(url)
+		return
 
 def checkSpecificReservation(driver, mountain, month, day, year):
 	"""Checks for specific reservation and reserves if available
@@ -317,6 +321,9 @@ def checkSpecificReservation(driver, mountain, month, day, year):
 	if isDayAvailable(driver, monthsToCheck[month], day, year):
 		# reserve day
 		reserveDay(driver, monthsToCheck[month], day, year)
+		# return to make reservation page
+		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+		driver.get(url)
 		# get day of week
 		dayOfWeek = datetime.date(year, month, day).strftime("%A")
 		# send alert
