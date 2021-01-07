@@ -79,6 +79,8 @@ sql = "INSERT INTO datesToReserve(month, day, year) VALUES (%s, %s, %s)"
 vals = (2, 14, 2021)
 cursor.execute(sql, vals)
 
+# only check up to here for now
+"""
 # add to database
 sql = "INSERT INTO datesToReserve(month, day, year) VALUES (%s, %s, %s)"
 vals = (2, 20, 2021)
@@ -89,8 +91,6 @@ sql = "INSERT INTO datesToReserve(month, day, year) VALUES (%s, %s, %s)"
 vals = (2, 21, 2021)
 cursor.execute(sql, vals)
 
-# only check up to February 21st for now
-"""
 # add to database
 sql = "INSERT INTO datesToReserve(month, day, year) VALUES (%s, %s, %s)"
 vals = (2, 27, 2021)
