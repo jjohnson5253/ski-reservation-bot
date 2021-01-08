@@ -233,7 +233,7 @@ def checkForOpenings(driver, datesAvailable):
 							dayOfWeek = datetime.date(year, month, day).strftime("%A")
 							# send alert
 							if reserve_success:
-								emailInterface.sendDateToReserveAlertEmail("cudzinovica+mtnrezalert@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikon_email)
+								emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikon_email)
 							# refresh scraper
 							selectMountain(driver, mountain)
 							selectMonth(driver, monthsToCheck[month], year)
