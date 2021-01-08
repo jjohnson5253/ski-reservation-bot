@@ -46,7 +46,7 @@ monthsToCheck = {
 # year to check
 year = 2021
 # Ikon account email
-ikon_email = sys.argv[1]
+ikonEmail = sys.argv[1]
 
 def login(driver):
 	"""Logs into Ikon website and clicks the 'make reservation' button.
@@ -217,7 +217,7 @@ def checkForOpenings(driver, datesAvailable):
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alert
-						emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikon_email)
+						emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
 						# refresh scraper
 						selectMountain(driver, mountain)
 						selectMonth(driver, monthsToCheck[month], year)
@@ -227,7 +227,7 @@ def checkForOpenings(driver, datesAvailable):
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alerts
-						emailInterface.sendReservationOpenAlertEmail("mantoadgoat@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikon_email)
+						emailInterface.sendReservationOpenAlertEmail("mantoadgoat@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
 						# add to list
 						datesAvailable.append([mountain, month, day, year])
 				else:
@@ -329,4 +329,4 @@ def checkSpecificReservation(driver, mountain, month, day, year):
 		# get day of week
 		dayOfWeek = datetime.date(year, month, day).strftime("%A")
 		# send alert
-		emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikon_email)
+		emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
