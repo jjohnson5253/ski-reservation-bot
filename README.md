@@ -1,10 +1,10 @@
 Created by Jake Johnson and Preston Windfeldt
 
-Description
+## Description
 
 Software for automatically reserving Ikon mountain reservations when they become available. This uses python3, mysql, and selenium.
 
-Usage
+## Usage
 
 -Run src/main.py [email] [password] with from top directory of project with python3
 -Use email and password for the Ikon account to make reservations on
@@ -13,7 +13,7 @@ Usage
 
 [Database Info](sql/DatabaseInfo.md)
 
-Installation
+## Installation
 
 Ubuntu
 -install python3
