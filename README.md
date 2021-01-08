@@ -11,6 +11,8 @@ Usage
 -Change the email used in the email alerts to whatever email you want
 -Use the python scripts under sql/ to add or remove dates you want to automatically reserve
 
+[Database Info](sql/DatabaseInfo.md)
+
 Installation
 
 Ubuntu

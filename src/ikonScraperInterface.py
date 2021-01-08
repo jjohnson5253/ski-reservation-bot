@@ -209,18 +209,34 @@ def checkForOpenings(driver, datesAvailable):
 					vals = (month, day, year)
 					cursor.execute(sql, vals)
 					# if not, insert into db send email alert
-					if cursor.rowcount != 0:
-						reserveDay(driver, monthsToCheck[month], day, year, mountain)
-						# return to make reservation page
-						url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-						driver.get(url)
-						# get day of week
-						dayOfWeek = datetime.date(year, month, day).strftime("%A")
-						# send alert
-						emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
-						# refresh scraper
-						selectMountain(driver, mountain)
-						selectMonth(driver, monthsToCheck[month], year)
+					row = cursor.fetchone()
+					if row:
+						# check if current mountain and ikon_email is valid for this date.
+						# empty mountain/ikon_email in db means all values are valid.
+						should_reserve = True
+						(db_month, db_day, db_year, db_mountains_as_str, db_ikon_emails_as_str) = row
+						if db_mountains_as_str:
+							db_mountains = db_mountains_as_str.split(',')
+							if mountain not in db_mountains:
+								should_reserve = False
+						if db_ikon_emails_as_str:
+							db_ikon_emails = db_ikon_emails_as_str.split(',')
+							if ikon_email not in db_ikon_emails:
+								should_reserve = False
+
+						if should_reserve:
+							reserve_success = reserveDay(driver, monthsToCheck[month], day, year, mountain)
+							# return to make reservation page
+							url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
+							driver.get(url)
+							# get day of week
+							dayOfWeek = datetime.date(year, month, day).strftime("%A")
+							# send alert
+							if reserve_success:
+								emailInterface.sendDateToReserveAlertEmail("cudzinovica+mtnrezalert@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikon_email)
+							# refresh scraper
+							selectMountain(driver, mountain)
+							selectMonth(driver, monthsToCheck[month], year)
 
 					# if day is not stored as available send alert, add to available dates
 					if [mountain, month, day, year] not in datesAvailable:
@@ -258,7 +274,7 @@ def reserveDay(driver, month, day, year, mountain):
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year))
-		return
+		return 0
 
 	# click save button
 	try:
@@ -268,7 +284,7 @@ def reserveDay(driver, month, day, year, mountain):
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
-		return
+		return 0
 
 	# give time for button click
 	time.sleep(1)
@@ -281,7 +297,7 @@ def reserveDay(driver, month, day, year, mountain):
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
-		return
+		return 0
 
 	# give time for button click
 	time.sleep(1)
@@ -294,7 +310,7 @@ def reserveDay(driver, month, day, year, mountain):
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
-		return
+		return 0
 
 	# give time for button click
 	time.sleep(1)
@@ -307,7 +323,9 @@ def reserveDay(driver, month, day, year, mountain):
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
-		return
+		return 0
+
+	return 1
 
 def checkSpecificReservation(driver, mountain, month, day, year):
 	"""Checks for specific reservation and reserves if available
