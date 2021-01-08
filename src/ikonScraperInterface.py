@@ -69,7 +69,7 @@ def login(driver):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Make a Reservation"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error logging in")
+		emailInterface.sendErrorEmail("Error logging in for " + ikonEmail)
 		sys.exit()
 	driver.execute_script("arguments[0].click();", resButton)
 
@@ -84,7 +84,7 @@ def selectMountain(driver, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="' + mountain + '"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting mountain " + mountain)
+		emailInterface.sendErrorEmail("Error selecting mountain " + mountain  + " for " + ikonEmail)
 		sys.exit()
 	driver.execute_script("arguments[0].click();", mountain)
 
@@ -95,7 +95,7 @@ def selectMountain(driver, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting mountain " + mountain)
+		emailInterface.sendErrorEmail("Error selecting mountain " + mountain  + " for " + ikonEmail)
 		sys.exit()
 	driver.execute_script("arguments[0].click();", contButton)
 
@@ -110,7 +110,7 @@ def selectMonth(driver, month, year):
 		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting month " + month)		
+		emailInterface.sendErrorEmail("Error selecting month " + month  + " for " + ikonEmail)		
 		sys.exit()
 
 	# loop through months until correct month is being checked. 
@@ -130,7 +130,7 @@ def selectMonth(driver, month, year):
 			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 		except:
 			print("Error: Timed out")
-			emailInterface.sendErrorEmail("Error selecting month " + month)
+			emailInterface.sendErrorEmail("Error selecting month " + month  + " for " + ikonEmail)
 			sys.exit()
 
 def isDayAvailable(driver, month, day, year):
@@ -153,7 +153,7 @@ def isDayAvailable(driver, month, day, year):
 	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error checking day availability for " + month + " " + day)
+		emailInterface.sendErrorEmail("Error checking day availability for " + month + " " + day  + " for " + ikonEmail)
 		sys.exit()
 
 	# print if day is available or not
@@ -273,7 +273,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year) + " for " + ikonEmail)
 		return 0
 
 	# click save button
@@ -283,7 +283,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year) + " for " + ikonEmail)
 		return 0
 
 	# give time for button click
@@ -296,7 +296,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year) + " for " + ikonEmail)
 		return 0
 
 	# give time for button click
@@ -309,7 +309,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year) + " for " + ikonEmail)
 		return 0
 
 	# give time for button click
@@ -322,7 +322,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year) + " for " + ikonEmail)
 		return 0
 
 	return 1
