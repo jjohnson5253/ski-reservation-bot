@@ -2,7 +2,7 @@
 
 import smtplib
 
-def sendReservationOpenAlertEmail(toAddress, mountain, month, day, year, dayOfWeek):
+def sendReservationOpenAlertEmail(toAddress, mountain, month, day, year, dayOfWeek, email):
 	"""Sends an email using smtp.
 	"""
 	FROMADDR = "mtnrezalert@gmail.com"
@@ -12,7 +12,7 @@ def sendReservationOpenAlertEmail(toAddress, mountain, month, day, year, dayOfWe
 
 	msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n"
 	       % (FROMADDR, ", ".join(TOADDRS), SUBJECT) )
-	msg += mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year + " opened up!!!\r\n"
+	msg += mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year + " opened up for " + email + "!!!\r\n"
 
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.set_debuglevel(1)
@@ -22,7 +22,7 @@ def sendReservationOpenAlertEmail(toAddress, mountain, month, day, year, dayOfWe
 	server.sendmail(FROMADDR, TOADDRS, msg)
 	server.quit()
 
-def sendDateToReserveAlertEmail(toAddress, mountain, month, day, year, dayOfWeek):
+def sendDateToReserveAlertEmail(toAddress, mountain, month, day, year, dayOfWeek, email):
 	"""Sends an email using smtp.
 	"""
 	FROMADDR = "mtnrezalert@gmail.com"
@@ -32,7 +32,7 @@ def sendDateToReserveAlertEmail(toAddress, mountain, month, day, year, dayOfWeek
 
 	msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n"
 	       % (FROMADDR, ", ".join(TOADDRS), SUBJECT) )
-	msg += mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year + " opened up!!!\r\n"
+	msg += mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year + " opened up for " + email + "!!!\r\n"
 
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.set_debuglevel(1)
