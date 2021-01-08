@@ -211,20 +211,20 @@ def checkForOpenings(driver, datesAvailable):
 					# if not, insert into db send email alert
 					row = cursor.fetchone()
 					if row:
-						# check if current mountain and ikon_email is valid for this date.
-						# empty mountain/ikon_email in db means all values are valid.
-						should_reserve = True
-						(db_month, db_day, db_year, db_mountains_as_str, db_ikon_emails_as_str) = row
-						if db_mountains_as_str:
-							db_mountains = db_mountains_as_str.split(',')
-							if mountain not in db_mountains:
-								should_reserve = False
-						if db_ikon_emails_as_str:
-							db_ikon_emails = db_ikon_emails_as_str.split(',')
-							if ikon_email not in db_ikon_emails:
-								should_reserve = False
+						# check if current mountain and ikon email is valid for this date.
+						# empty mountain/ikon email in db means all values are valid.
+						shouldReserve = True
+						(dbMonth, dbDay, dbYear, dbMountainsAsStr, dbIkonEmailsAsStr) = row
+						if dbMountainsAsStr:
+							dbMountains = dbMountainsAsStr.split(',')
+							if mountain not in dbMountains:
+								shouldReserve = False
+						if dbIkonEmailsAsStr:
+							dbIkonEmails = dbIkonEmailsAsStr.split(',')
+							if ikon_email not in dbIkonEmails:
+								shouldReserve = False
 
-						if should_reserve:
+						if shouldReserve:
 							reserve_success = reserveDay(driver, monthsToCheck[month], day, year, mountain)
 							# return to make reservation page
 							url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
