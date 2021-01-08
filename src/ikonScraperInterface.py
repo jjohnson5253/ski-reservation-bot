@@ -257,7 +257,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year))
 		return
 
 	# click save button
@@ -267,7 +267,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
 		return
 
 	# give time for button click
@@ -280,7 +280,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
 		return
 
 	# give time for button click
@@ -293,7 +293,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
 		return
 
 	# give time for button click
@@ -306,7 +306,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + dayOfWeek + " " + month + " " + day + ", " + year)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
 		return
 
 def checkSpecificReservation(driver, mountain, month, day, year):
