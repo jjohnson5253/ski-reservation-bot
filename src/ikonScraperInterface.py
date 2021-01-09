@@ -47,6 +47,8 @@ monthsToCheck = {
 year = 2021
 # Ikon account email
 ikonEmail = sys.argv[1]
+# Ikon account password
+ikonPassword = sys.argv[2]
 
 def login(driver):
 	"""Logs into Ikon website and clicks the 'make reservation' button.
@@ -57,9 +59,9 @@ def login(driver):
 	
 	# send login parameters
 	username = driver.find_element_by_name('email')
-	username.send_keys(sys.argv[1])
+	username.send_keys(ikonEmail)
 	password = driver.find_element_by_name('password')
-	password.send_keys(sys.argv[2])
+	password.send_keys(ikonPassword)
 	password.send_keys(Keys.RETURN)
 
 	# click 'Make a Reservation' button
@@ -217,7 +219,7 @@ def checkForOpenings(driver, datesAvailable):
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alert
-						emailInterface.sendDateToReserveAlertEmail(sys.argv[1], mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
+						emailInterface.sendDateToReserveAlertEmail(ikonEmail, mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
 						# refresh scraper
 						selectMountain(driver, mountain)
 						selectMonth(driver, monthsToCheck[month], year)
@@ -329,4 +331,4 @@ def checkSpecificReservation(driver, mountain, month, day, year):
 		# get day of week
 		dayOfWeek = datetime.date(year, month, day).strftime("%A")
 		# send alert
-		emailInterface.sendDateToReserveAlertEmail(sys.argv[1], mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
+		emailInterface.sendDateToReserveAlertEmail(ikonEmail, mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
