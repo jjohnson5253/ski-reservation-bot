@@ -1,4 +1,4 @@
-# Copyright 2021 Jake Johnson
+# Created 2021 by Jake Johnson
 
 import sys
 import mysql.connector
