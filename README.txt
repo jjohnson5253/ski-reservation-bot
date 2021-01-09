@@ -34,9 +34,18 @@ Ubuntu
 		-say yes to everything
 		-make password "PurpleNapkin111$"
 	-python3 -m pip install mysql
+        -python3 -m pip install mysql-connector-python
+        -python3 -m pip install mysql-connector-python-rf
+
 -setup sql database
 	-run mysql
-	-run the commands located in setup/sqlSetup.sql
+	-run these commands in mysql
+            CREATE USER 'reserver'@'localhost' IDENTIFIED BY 'PurpleNapkin111$';
+            GRANT ALL PRIVILEGES ON * . * TO 'reserver'@'localhost';
+            FLUSH PRIVILEGES;
+            CREATE DATABASE mtnrez;
+            USE mtnrez;
+            CREATE TABLE datesToReserve(month int, day int, year int);
 -remove junk files
 	$rm selenium-server-standalone-3.13.0.jar
 	$rm chromedriver_linux64
