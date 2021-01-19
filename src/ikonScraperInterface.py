@@ -214,25 +214,23 @@ def checkForOpenings(driver, datesAvailable):
 						# check if current mountain and ikon email is valid for this date.
 						# empty mountain/ikon email in db means all values are valid.
 						shouldReserve = True
-						(dbMonth, dbDay, dbYear, dbMountainsAsStr, dbIkonEmailsAsStr) = row
-						if dbMountainsAsStr:
-							dbMountains = dbMountainsAsStr.split(',')
-							if mountain not in dbMountains:
+						(dbMonth, dbDay, dbYear, dbMountains, dbIkonEmails) = row
+						if dbMountains:
+							if mountain not in dbMountains.split(','):
 								shouldReserve = False
-						if dbIkonEmailsAsStr:
-							dbIkonEmails = dbIkonEmailsAsStr.split(',')
-							if ikonEmail not in dbIkonEmails:
+						if dbIkonEmails:
+							if ikonEmail not in dbIkonEmails.split(','):
 								shouldReserve = False
 
 						if shouldReserve:
-							reserve_success = reserveDay(driver, monthsToCheck[month], day, year, mountain)
+							reserveSuccess = reserveDay(driver, monthsToCheck[month], day, year, mountain)
 							# return to make reservation page
 							url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 							driver.get(url)
 							# get day of week
 							dayOfWeek = datetime.date(year, month, day).strftime("%A")
 							# send alert
-							if reserve_success:
+							if reserveSuccess:
 								emailInterface.sendDateToReserveAlertEmail("jjohnson11096@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
 							# refresh scraper
 							selectMountain(driver, mountain)
