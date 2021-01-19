@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Jake Johnson and Preston Windfeldt
+# Created in 2020 by Jake Johnson and Preston Windfeldt
 # Filename: main.py
 # Purpose:  Main program that constantly checks if mountain
 #           reservations become available on the Ikon pass.
