@@ -18,6 +18,12 @@ SQL_HOST = "localhost"
 month = sys.argv[1]
 day = sys.argv[2]
 year = sys.argv[3]
+mountains = ""
+if len(sys.argv) >= 5:
+  mountains = sys.argv[4]
+emails = ""
+if len(sys.argv) >= 6:
+  emails = sys.argv[5]
 
 # connect to database
 db = mysql.connector.connect( host=SQL_HOST, user=SQL_USERNAME, 
@@ -25,8 +31,8 @@ db = mysql.connector.connect( host=SQL_HOST, user=SQL_USERNAME,
 cursor = db.cursor(buffered = True)
 
 # add to database
-sql = "INSERT INTO datesToReserve(month, day, year) VALUES (%s, %s, %s)"
-vals = (month, day, year)
+sql = "INSERT INTO datesToReserve(month, day, year, mountains, emails) VALUES (%s, %s, %s, %s, %s)"
+vals = (month, day, year, mountains, emails)
 cursor.execute(sql, vals)
 
 # commit and close connection

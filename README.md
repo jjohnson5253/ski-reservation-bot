@@ -10,11 +10,8 @@ Software for automatically reserving Ikon mountain reservations when they become
 - Use email and password for the Ikon account to make reservations on
 - Change the email used in the email alerts to whatever email you want
 - Use the python scripts under sql/ to add or remove dates you want to automatically reserve
-
-
-## Database Info
-
-[See here](sql/DatabaseInfo.md)
+  - The scripts to insert dates can optionally take arguments for mountains and emails to which you want to restrict dates. The mountains and emails arguments should be in the form of a comma delimited string surrounded by quotes. (i.e. `$python insertDateToReserve.py 3 10 2021 "Brighton,Arapahoe Basin" "billy.bob@yahoo.com,joe.mama@hotmail.com"`)
+  - If you wish to add a value for emails but not for mountains, you must supply an empty string between quotes as the argument for mountains. (i.e. `$python insertDateToReserve.py 3 10 2021 "" "billy.bob@yahoo.com,joe.mama@hotmail.com"`)
 
 ## Installation
 
@@ -27,21 +24,21 @@ Ubuntu
 	$py -m pip3 install selenium
 - install selenium and chrome driver for web server (just run this even if not using server)
 	$py setup/installSelenium.py
-	-ctrl-c once this is done running
-	-I followed this link if anything goes wrong: https://tecadmin.net/setup-selenium-chromedriver-on-ubuntu/
+	- ctrl-c once this is done running
+	- I followed this link if anything goes wrong: https://tecadmin.net/setup-selenium-chromedriver-on-ubuntu/
 - install chrome
 	$sudo apt-get install libxss1 libappindicator1 libindicator7
 	$wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 	$sudo apt install ./google-chrome*.deb
 - install mysql
-	-sudo apt install mysql-server
-	-sudo mysql_secure_installation
-		-say yes to everything
-		-make password "PurpleNapkin111$"
-	-python3 -m pip install mysql
+	$sudo apt install mysql-server
+	$sudo mysql_secure_installation
+		- say yes to everything
+		- make password "PurpleNapkin111$"
+	$python3 -m pip install mysql
 - setup sql database
-	-run mysql
-	-run the commands located in setup/sqlSetup.sql
+	- run mysql
+	- run the commands located in setup/sqlSetup.sql
 - remove junk files
 	$rm selenium-server-standalone-3.13.0.jar
 	$rm chromedriver_linux64
@@ -51,9 +48,9 @@ Ubuntu
 Windows
 - install python3
 - install selenium
-	-$py -m pip3 install selenium
+	$py -m pip3 install selenium
 - install chrome
 - install xampp with mysql
 - open up localhost/phpmyadmin in browser and run the sql commands in setup/sqlSetup.sql
 - install chrome driver for the version of chrome you have (86/87/88/etc)
-	-https://chromedriver.chromium.org/downloads
+	- https://chromedriver.chromium.org/downloads
