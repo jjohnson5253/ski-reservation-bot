@@ -13,7 +13,7 @@ Software for automatically reserving Ikon mountain reservations when they become
 
 ## Installation
 
-Ubuntu
+#### Ubuntu
 - install python3
 	- `$sudo apt-get install python3`
 - install pip
@@ -39,19 +39,21 @@ Ubuntu
 - setup sql database
 	- run mysql
 	- run these commands in mysql
-            CREATE USER 'reserver'@'localhost' IDENTIFIED BY 'PurpleNapkin111$';
-            GRANT ALL PRIVILEGES ON * . * TO 'reserver'@'localhost';
-            FLUSH PRIVILEGES;
-            CREATE DATABASE mtnrez;
-            USE mtnrez;
-            CREATE TABLE datesToReserve(month int, day int, year int, mountains varchar(255), emails varchar(255));
+    ```
+    CREATE USER 'reserver'@'localhost' IDENTIFIED BY 'PurpleNapkin111$';
+    GRANT ALL PRIVILEGES ON * . * TO 'reserver'@'localhost';
+    FLUSH PRIVILEGES;
+    CREATE DATABASE mtnrez;
+    USE mtnrez;
+    CREATE TABLE datesToReserve(month int, day int, year int, mountains varchar(255), emails varchar(255));
+    ```
 - remove junk files
 	- `$rm selenium-server-standalone-3.13.0.jar`
 	- `$rm chromedriver_linux64`
 	- `$rm testng-6.8.7.jar`
 	- `$rm testng-6.8.7.jar.zip`
 
-Windows
+#### Windows
 - install python3
 - install selenium
 	- `$py -m pip3 install selenium`
