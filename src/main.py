@@ -30,6 +30,7 @@ def main():
 		driver = webdriver.Chrome(options=options)
 	else:
 		driver = webdriver.Chrome()
+		driver.set_page_load_timeout(20)
 
 	# login to ikon website
 	ikonScraperInterface.login(driver)
