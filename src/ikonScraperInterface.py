@@ -211,7 +211,7 @@ def checkForOpenings(driver, datesAvailable):
 					sql = "SELECT * FROM datesToReserve WHERE (month, day, year) = (%s, %s, %s)"
 					vals = (month, day, year)
 					cursor.execute(sql, vals)
-					# if not, insert into db send email alert
+					# if it is, reserve the day and send email alert
 					if cursor.rowcount != 0:
 						reserveDay(driver, monthsToCheck[month], day, year, mountain)
 						# return to make reservation page
