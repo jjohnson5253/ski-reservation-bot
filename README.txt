@@ -14,6 +14,7 @@ Usage
 	-set HEADLESS to 0 in top of main.py
 	-note you might not be able to if you are running on an external server
 -Edit mountainsToCheck list in ikonScraperInterface.py to change which Ikon mountains to check
+	-Make sure the name you input is the exact name used on Ikon site when you try to make a reservation
 
 Installation
 
