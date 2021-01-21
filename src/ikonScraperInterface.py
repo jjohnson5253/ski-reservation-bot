@@ -12,9 +12,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import calendar
-import mysql.connector
-from mysql.connector import Error
-from mysql.connector import errorcode
 import smtplib
 import emailInterface
 import time

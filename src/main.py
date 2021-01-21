@@ -11,15 +11,39 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 
+from PyQt5.QtCore import QDateTime, Qt, QTimer, pyqtSlot
+from PyQt5.QtWidgets import (QApplication, QLabel,
+        QPushButton, QWidget, QDialog, QGridLayout, QGroupBox, QHBoxLayout,
+        QVBoxLayout)
+
 # MACRO for if web driver should run in headless mode or not
 # Must be set to 1 if running on virtual server
-HEADLESS = 1
+HEADLESS = 0
 
-def main():	
+class WidgetGallery(QDialog):
+	def __init__(self, parent=None):
+		super(WidgetGallery, self).__init__(parent)
+
+		mainLayout = QVBoxLayout()
+		startBotButton = QPushButton("Start")
+		startBotButton.clicked.connect(self.startBot)
+		mainLayout.addWidget(startBotButton)
+
+
+		self.setLayout(mainLayout)
+		self.setWindowTitle("Ikon Bot")
+
+	@pyqtSlot()
+	def startBot(self):
+		startBot()
+
+
+def startBot():	
 	"""Main function. initializes web driver, logs into ikon site,
 	and runs an infinite loop checking for openings of dates specified
 	by user.
 	"""
+
 	# list to store dates to reserve
 	datesToReserve = []
 	# list to store available dates
@@ -62,4 +86,8 @@ def main():
 	sys.exit()
 
 if __name__ == "__main__":
-    main()
+    app = QApplication(sys.argv)
+    gallery = WidgetGallery()
+    gallery.show()
+
+    sys.exit(app.exec_()) 
