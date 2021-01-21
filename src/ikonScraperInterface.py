@@ -23,7 +23,7 @@ AVAILABLE = 'DayPicker-Day'
 # class name if available and day is today
 AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
 # mountains to check for availability
-mountainsToCheck = ["Winter Park Resort"]
+mountainsToCheck = ["Arapahoe Basin", "Winter Park Resort"]
 # months to check for availability
 monthsToCheck = {
 	1: "January",
