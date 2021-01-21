@@ -37,6 +37,11 @@ To get code running on bootup of ubuntu:
 	$sudo reboot
 -to see if code is running on rc.local:
 	$sudo systemctl status rc-local.servicesudo systemctl status rc-local.service
+-for seeing console output, put this in top of /etc/rc.local/
+	exec 1>/tmp/rc.local.log 2>&1
+	set -x
+-to view console output after adding above lines:
+	$cat /tmp/rc.local.log
 -----------------------------------------------------------------------------------------------
 
 
