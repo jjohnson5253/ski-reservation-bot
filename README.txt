@@ -5,6 +5,7 @@ Description
 Software for automatically reserving Ikon mountain reservations when they become available. This uses python3 and selenium.
 
 Usage
+
 -Input dates you want to reserve in the text file datesToReserve.txt
 	-format (all integers): [month] [day] [year]
 	 ie: 3 1 2021
@@ -43,7 +44,6 @@ Ubuntu
 	$sudo apt-get install libxss1 libappindicator1 libindicator7
 	$wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 	$sudo apt install ./google-chrome*.deb
-
 -remove junk files
 	$rm selenium-server-standalone-3.13.0.jar
 	$rm chromedriver_linux64
