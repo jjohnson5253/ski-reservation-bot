@@ -6,6 +6,7 @@
 #
 
 import sys
+import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -22,7 +23,7 @@ AVAILABLE = 'DayPicker-Day'
 # class name if available and day is today
 AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
 # mountains to check for availability
-mountainsToCheck = ["Arapahoe Basin", "Winter Park Resort"]
+mountainsToCheck = ["Winter Park Resort"]
 # months to check for availability
 monthsToCheck = {
 	1: "January",
@@ -162,7 +163,11 @@ def isDayAvailable(driver, month, day, year):
 		return False
 
 def addDatesToReserveToList(datesToReserve):
-	datesTxtFile = open('datesToReserve.txt')
+	# get path to datesToReserve file. Should be in current directory
+	path = os.getcwd() + "\\datesToReserve.txt"
+
+	# open file and add contents to list
+	datesTxtFile = open(path)
 	for date in datesTxtFile:
 		date = date.split()
 		datesToReserve.append([date[datesTxtFileIndex['day']], date[datesTxtFileIndex['month']], date[datesTxtFileIndex['year']]])
