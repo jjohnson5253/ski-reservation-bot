@@ -164,6 +164,8 @@ def isDayAvailable(driver, month, day, year):
 
 def addDatesToReserveToList(datesToReserve):
 	# get path to datesToReserve file. Should be in current directory
+	# todo: fix this... it is currently making "/datesToReserve.txt" when
+	# it should make "datesToReserve.txt"
 	path = os.path.join(os.getcwd(), "datesToReserve.txt")
 
 	# open file and add contents to list
