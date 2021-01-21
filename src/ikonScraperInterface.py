@@ -212,7 +212,7 @@ def checkForOpenings(driver, datesAvailable, datesToReserve):
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
 					# check if date is in datesToReserve and reserve if so
-					if [day, month, year] in datesToReserve:
+					if [str(month), str(day), str(year)] in datesToReserve:
 						reserveDay(driver, monthsToCheck[month], day, year, mountain)
 						# return to make reservation page
 						driver.get(makeResUrl)

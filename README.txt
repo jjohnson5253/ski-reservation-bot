@@ -7,7 +7,13 @@ Software for automatically reserving Ikon mountain reservations when they become
 Usage
 
 -Run src/main.py [email] [password] with from top directory of project with python3
--Use the python scripts under sql/ to add or remove dates you want to automatically reserve
+-Input dates you want to reserve in the text file datesToReserve.txt
+	-format (all integers): [month] [day] [year]
+	 ie: 3 1 2021
+-Turn off headless mode to watch scraper click through site
+	-set HEADLESS to 0 in top of main.py
+	-note you might not be able to if you are running on an external server
+-Edit mountainsToCheck list in ikonScraperInterface.py to change which Ikon mountains to check
 
 Installation
 
