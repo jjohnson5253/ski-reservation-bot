@@ -24,6 +24,8 @@ def main():
 	datesToReserve = []
 	# list to store available dates
 	availableDates = []
+	# mountains to check for availability
+	mountainsToCheck = []
 
 	# initialize web driver
 	if (HEADLESS):
@@ -45,11 +47,11 @@ def main():
 
 	# fill up dates lists
 	ikonScraperInterface.addAvailableDatesToList(driver, availableDates)
-	ikonScraperInterface.addDatesToReserveToList(datesToReserve)
+	ikonScraperInterface.addDatesToReserveToList(datesToReserve, mountainsToCheck)
 
 	# Constantly check for openings in reservations
 	while(True):
-		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve)
+		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve, mountainsToCheck)
 		print("Still checking")
 
 		# sleep so CPU processing doesn't get taken up
