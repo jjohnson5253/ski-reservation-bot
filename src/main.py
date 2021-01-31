@@ -46,8 +46,8 @@ def main():
 	ikonScraperInterface.login(driver)
 
 	# fill up dates lists
-	ikonScraperInterface.addAvailableDatesToList(driver, availableDates)
 	ikonScraperInterface.addDatesToReserveToList(datesToReserve, mountainsToCheck)
+	ikonScraperInterface.addAvailableDatesToList(driver, availableDates, mountainsToCheck)
 
 	# Constantly check for openings in reservations
 	while(True):

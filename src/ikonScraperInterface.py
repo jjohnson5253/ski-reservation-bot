@@ -33,7 +33,7 @@ monthsToCheck = {
 }
 # dict to store index of day/month/year in each line of datesToReserve
 # txt file
-datesTxtFileIndex = {'day':0, 'month':1, 'year':2}
+datesTxtFileIndex = {'day':0, 'month':1, 'year':2, 'mountain': 3, 'email': 4}
 # year to check
 year = 2021
 # Ikon account email
@@ -168,18 +168,39 @@ def addDatesToReserveToList(datesToReserve, mountainsToCheck):
 	# open file and add contents to list
 	datesTxtFile = open(path)
 	for date in datesTxtFile:
-		date = date.split()
+		# strip newline from string and split values from comma delimiter
+		date = date.strip('\n')
+		date = date.split(',')
 		# only reserve dates in text file that match current users email
 		if (date[datesTxtFileIndex['email']] == ikonEmail):
-			datesToReserve.append([date[datesTxtFileIndex['day']], date[datesTxtFileIndex['month']], date[datesTxtFileIndex['year']]])
+			#print(date)
+			datesToReserve.append([date[datesTxtFileIndex['day']], date[datesTxtFileIndex['month']], date[datesTxtFileIndex['year']], date[datesTxtFileIndex['mountain']]])
 			# add mountains that should be checked
-			mountainsToCheck.append(date[datesTxtFileIndex['mountain']])
+			if date[datesTxtFileIndex['mountain']] not in mountainsToCheck:
+				mountainsToCheck.append(date[datesTxtFileIndex['mountain']])
+
+def addAvailableDatesToList(driver, datesAvailable, mountainsToCheck):
+	"""Scrapes Ikon site and adds available dates to list.
+	"""
+	# check reserved dates for each mountain. Only check Jan-June 
+	# TODO: make this scalable to whatever current year is
+	for mountain in mountainsToCheck:
+		# reload to allow new mountain selection
+		driver.get(makeResUrl)
+		selectMountain(driver, mountain)
+		for month in monthsToCheck:
+			selectMonth(driver, monthsToCheck[month], year)
+			# check each days availability and add to list
+			for day in range(1, calendar.monthrange(year, month)[1] + 1):
+				if isDayAvailable(driver, monthsToCheck[month], day, year):
+					datesAvailable.append([mountain, month, day, year])
 
 def checkForOpenings(driver, datesAvailable, datesToReserve, mountainsToCheck):
 	"""Checks if any reserved days have become available by scraping Ikon site 
 	and comparing to the current stored available dates in our list. Reserves 
 	days that are set in database if they become available.
 	"""
+
 	# check current available dates
 	for mountain in mountainsToCheck:
 		# reload to allow new mountain selection
@@ -192,7 +213,7 @@ def checkForOpenings(driver, datesAvailable, datesToReserve, mountainsToCheck):
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
 					# check if date is in datesToReserve and reserve if so
-					if [str(month), str(day), str(year)] in datesToReserve:
+					if [str(month), str(day), str(year), mountain] in datesToReserve:
 						reserveSuccess = reserveDay(driver, monthsToCheck[month], day, year, mountain)
 						# return to make reservation page
 						driver.get(makeResUrl)
