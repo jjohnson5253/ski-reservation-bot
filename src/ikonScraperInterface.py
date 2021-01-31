@@ -1,20 +1,18 @@
 #
-# Copyright 2020 Jake Johnson and Preston Windfeldt
+# Created in 2020 by Jake Johnson and Preston Windfeldt
 # Filename: ikonScraperInterface.py
 # Purpose:  Provide web scraping interface for interacting with 
 #           Ikon website
 #
 
 import sys
+import os
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import calendar
-import mysql.connector
-from mysql.connector import Error
-from mysql.connector import errorcode
 import smtplib
 import emailInterface
 import time
@@ -24,14 +22,6 @@ import datetime
 AVAILABLE = 'DayPicker-Day'
 # class name if available and day is today
 AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
-# SQL username
-SQL_USERNAME = "reserver"
-# SQL password
-SQL_PASSWORD = "PurpleNapkin111$"
-# SQL database
-SQL_DB = "mtnrez"
-# SQL host
-SQL_HOST = "localhost"
 # mountains to check for availability
 mountainsToCheck = ["Arapahoe Basin", "Winter Park Resort"]
 # months to check for availability
@@ -43,12 +33,20 @@ monthsToCheck = {
 	5: "May",
 	6: "June"
 }
+# dict to store index of day/month/year in each line of datesToReserve
+# txt file
+datesTxtFileIndex = {'day':0, 'month':1, 'year':2}
 # year to check
 year = 2021
 # Ikon account email
 ikonEmail = sys.argv[1]
 # Ikon account password
 ikonPassword = sys.argv[2]
+# macro for if user wants all mountain openings to be emailed to them.
+# Not just ones in their dates to reserve.
+ALERT_ALL_OPENINGS = False
+# url to the make reservation page
+makeResUrl = "https://account.ikonpass.com/en/myaccount/add-reservations/"
 
 def login(driver):
 	"""Logs into Ikon website and clicks the 'make reservation' button.
@@ -71,13 +69,13 @@ def login(driver):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Make a Reservation"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error logging in")
+		emailInterface.sendErrorEmail("Error logging in", ikonEmail)
 		sys.exit()
 	driver.execute_script("arguments[0].click();", resButton)
 
 def selectMountain(driver, mountain):
-	"""Selects mountain on the 'make reservation' page. From here, selectMonth() and
-	then isDayAvailable() can be called.
+	"""Selects mountain on the 'make reservation' page. From here, selectMonth() 
+	and then isDayAvailable() can be called.
 	"""
 	# select mountain
 	try:
@@ -86,7 +84,7 @@ def selectMountain(driver, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="' + mountain + '"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting mountain " + mountain)
+		emailInterface.sendErrorEmail("Error selecting mountain " + mountain, ikonEmail)
 		sys.exit()
 	driver.execute_script("arguments[0].click();", mountain)
 
@@ -97,7 +95,7 @@ def selectMountain(driver, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting mountain " + mountain)
+		emailInterface.sendErrorEmail("Error selecting mountain " + mountain, ikonEmail)
 		sys.exit()
 	driver.execute_script("arguments[0].click();", contButton)
 
@@ -112,12 +110,13 @@ def selectMonth(driver, month, year):
 		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting month " + month)		
+		emailInterface.sendErrorEmail("Error selecting month " + month, ikonEmail)		
 		sys.exit()
 
 	# loop through months until correct month is being checked. 
 	# Will start from month entered and increment until June 2021.
-	while (monthBeingChecked.get_attribute('innerHTML') != (month + ' ' + str(year))):
+	while (monthBeingChecked.get_attribute('innerHTML') != 
+        (month + ' ' + str(year))):
 		# if we have reached June and that was not desired month, return
 		if monthBeingChecked.get_attribute('innerHTML') == ("June 2021") and month != "June":
 			print("Error: Failed to select month")
@@ -132,7 +131,7 @@ def selectMonth(driver, month, year):
 			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 		except:
 			print("Error: Timed out")
-			emailInterface.sendErrorEmail("Error selecting month " + month)
+			emailInterface.sendErrorEmail("Error selecting month " + month, ikonEmail)
 			sys.exit()
 
 def isDayAvailable(driver, month, day, year):
@@ -142,29 +141,39 @@ def isDayAvailable(driver, month, day, year):
 	# parse monthInput since that is how it is labeled in the Ikon page HTML
 	month = month[0:3]
 
-	# format day, if it's single digits, prepend with 0 since that is Ikon's site format
+	# format day, if it's single digits, prepend with 0 since that is Ikon's
+	# site format
 	dayFormatted = str(day)
 	if (day < 10):
 		dayFormatted = "0" + dayFormatted
 
-	# check if day is available by reading element class. Class will be 'DayPicker-Day'
-	# if available
+	# check if day is available by reading element class. Class will be 
+	# 'DayPicker-Day' if available
 	try:
 		# wait for page to load
 		dayElement = WebDriverWait(driver, 20).until(
 	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error checking day availability for " + month + " " + day)
+		emailInterface.sendErrorEmail("Error checking day availability for " + month + " " + day, ikonEmail)
 		sys.exit()
 
-	# print if day is available or not
+	# return if day is available or not
 	if (dayElement.get_attribute('class') == AVAILABLE or dayElement.get_attribute('class') == AVAILABLE_TODAY):
-		#print(month + " " + dayFormatted + " AVAILABLE")
 		return True
 	else:
-		#print(month + " " + dayFormatted + " RESERVED")
 		return False
+
+def addDatesToReserveToList(datesToReserve):
+	# get path to datesToReserve file. Should be in directory above this script
+	script_dir = os.path.dirname(__file__)
+	path = os.path.join(script_dir, "..", "datesToReserve.txt")
+
+	# open file and add contents to list
+	datesTxtFile = open(path)
+	for date in datesTxtFile:
+		date = date.split()
+		datesToReserve.append([date[datesTxtFileIndex['day']], date[datesTxtFileIndex['month']], date[datesTxtFileIndex['year']]])
 
 def addAvailableDatesToList(driver, datesAvailable):
 	"""Scrapes Ikon site and adds available dates to list.
@@ -173,8 +182,7 @@ def addAvailableDatesToList(driver, datesAvailable):
 	# TODO: make this scalable to whatever current year is
 	for mountain in mountainsToCheck:
 		# reload to allow new mountain selection
-		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-		driver.get(url)
+		driver.get(makeResUrl)
 		selectMountain(driver, mountain)
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
@@ -183,17 +191,11 @@ def addAvailableDatesToList(driver, datesAvailable):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
 					datesAvailable.append([mountain, month, day, year])
 
-def checkForOpenings(driver, datesAvailable):
-	"""Checks if any reserved days have become available by scraping Ikon site and comparing
-	to the current stored available dates in our list. Reserves days that are set in database
-	if they become available.
+def checkForOpenings(driver, datesAvailable, datesToReserve):
+	"""Checks if any reserved days have become available by scraping Ikon site 
+	and comparing to the current stored available dates in our list. Reserves 
+	days that are set in database if they become available.
 	"""
-
-	# connect to database
-	db = mysql.connector.connect( host=SQL_HOST, user=SQL_USERNAME, 
-		 password=SQL_PASSWORD, database=SQL_DB)
-	cursor = db.cursor(buffered = True)
-
 	# check current available dates
 	for mountain in mountainsToCheck:
 		# reload to allow new mountain selection
@@ -206,16 +208,11 @@ def checkForOpenings(driver, datesAvailable):
 
 			for day in range(1, calendar.monthrange(year, month)[1] + 1):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
-					# check if this day is in dates to reserve table
-					sql = "SELECT * FROM datesToReserve WHERE (month, day, year) = (%s, %s, %s)"
-					vals = (month, day, year)
-					cursor.execute(sql, vals)
-					# if not, insert into db send email alert
-					if cursor.rowcount != 0:
+					# check if date is in datesToReserve and reserve if so
+					if [str(month), str(day), str(year)] in datesToReserve:
 						reserveDay(driver, monthsToCheck[month], day, year, mountain)
 						# return to make reservation page
-						url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-						driver.get(url)
+						driver.get(makeResUrl)
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
 						# send alert
@@ -224,21 +221,21 @@ def checkForOpenings(driver, datesAvailable):
 						selectMountain(driver, mountain)
 						selectMonth(driver, monthsToCheck[month], year)
 
-					# if day is not stored as available send alert, add to available dates
+					# if day is not stored as available send alert if desire and
+					# add to available dates
 					if [mountain, month, day, year] not in datesAvailable:
 						# get day of week
 						dayOfWeek = datetime.date(year, month, day).strftime("%A")
-						# send alerts
-						emailInterface.sendReservationOpenAlertEmail("mantoadgoat@gmail.com", mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
+						# send alerts if desired
+						if ALERT_ALL_OPENINGS:
+							emailInterface.sendReservationOpenAlertEmail(ikonEmail, mountain, monthsToCheck[month], str(day), str(year), dayOfWeek, ikonEmail)
 						# add to list
 						datesAvailable.append([mountain, month, day, year])
 				else:
-					# if day is stored as available but is no longer available, remove it from list
+					# if day is not available but stored as available, remove it 
+					# from list
 					if [mountain, month, day, year] in datesAvailable:
 						datesAvailable.remove([mountain, month, day, year])
-
-	db.commit()
-	cursor.close()
 
 def reserveDay(driver, month, day, year, mountain):
 	"""Reserves a day in Ikon if available.
@@ -246,7 +243,8 @@ def reserveDay(driver, month, day, year, mountain):
 	# parse monthInput since that is how it is labeled in the Ikon page HTML
 	month = month[0:3]
 
-	# format day, if it's single digits, prepend with 0 since that is Ikon's site format
+	# format day, if it's single digits, prepend with 0 since that is Ikon's 
+	# site format
 	dayFormatted = str(day)
 	if (day < 10):
 		dayFormatted = "0" + dayFormatted
@@ -259,7 +257,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year), ikonEmail)
 		return
 
 	# click save button
@@ -269,7 +267,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
 		return
 
 	# give time for button click
@@ -282,7 +280,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
 		return
 
 	# give time for button click
@@ -292,10 +290,11 @@ def reserveDay(driver, month, day, year, mountain):
 	try:
 		# wait for page to load
 		confirmCheckbox = WebDriverWait(driver, 20).until(
-		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
+		EC.presence_of_element_located((By.XPATH, 
+            '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
 		return
 
 	# give time for button click
@@ -308,15 +307,14 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year))
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
 		return
 
 def checkSpecificReservation(driver, mountain, month, day, year):
 	"""Checks for specific reservation and reserves if available
 	"""
 	# reload to allow new mountain selection
-	url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-	driver.get(url)
+	driver.get(makeResUrl)
 
 	selectMountain(driver, mountain)
 
@@ -326,8 +324,7 @@ def checkSpecificReservation(driver, mountain, month, day, year):
 		# reserve day
 		reserveDay(driver, monthsToCheck[month], day, year, mountain)
 		# return to make reservation page
-		url = "https://account.ikonpass.com/en/myaccount/add-reservations/"
-		driver.get(url)
+		driver.get(makeResUrl)
 		# get day of week
 		dayOfWeek = datetime.date(year, month, day).strftime("%A")
 		# send alert

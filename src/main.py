@@ -1,5 +1,5 @@
 #
-# Copyright 2020 Jake Johnson and Preston Windfeldt
+# Created in 2020 by Jake Johnson and Preston Windfeldt
 # Filename: main.py
 # Purpose:  Main program that constantly checks if mountain
 #           reservations become available on the Ikon pass.
@@ -16,8 +16,15 @@ import time
 HEADLESS = 1
 
 def main():	
-	"""Main function. TODO: update with what it does
+	"""Main function. initializes web driver, logs into ikon site,
+	and runs an infinite loop checking for openings of dates specified
+	by user.
 	"""
+	# list to store dates to reserve
+	datesToReserve = []
+	# list to store available dates
+	availableDates = []
+
 	# initialize web driver
 	if (HEADLESS):
 		options = Options()
@@ -25,25 +32,27 @@ def main():
 		options.add_argument('--disable-gpu')
 		options.add_argument("window-size=1024,768")
 		options.add_argument("--no-sandbox")
-		#options.add_argument("--disable-logging")
 		options.add_argument("--log-level=3");
 		driver = webdriver.Chrome(options=options)
 	else:
 		driver = webdriver.Chrome()
 
+	# set page load timeout
+	driver.set_page_load_timeout(20)
+
 	# login to ikon website
 	ikonScraperInterface.login(driver)
 
-	# list to store available dates
-	availableDates = []
-
-	# fill up list
+	# fill up dates lists
 	ikonScraperInterface.addAvailableDatesToList(driver, availableDates)
+	ikonScraperInterface.addDatesToReserveToList(datesToReserve)
 
 	# Constantly check for openings in reservations
 	while(True):
-		ikonScraperInterface.checkForOpenings(driver, availableDates)
+		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve)
 		print("Still checking")
+
+		# sleep so CPU processing doesn't get taken up
 		time.sleep(2)
 
 	# close driver

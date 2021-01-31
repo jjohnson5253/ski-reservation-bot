@@ -1,12 +1,13 @@
-# Copyright 2021 Jake Johnson and Preston Windfeldt
+# Created 2021 by Jake Johnson and Preston Windfeldt
 
 import smtplib
 
+FROMADDR = "mtnrezalert@gmail.com"
+PASSWORD = "wakeupsheeple123!"
+	
 def sendReservationOpenAlertEmail(toAddress, mountain, month, day, year, dayOfWeek, email):
-	"""Sends an email using smtp.
+	"""Sends an email notifying user that a date has become available.
 	"""
-	FROMADDR = "mtnrezalert@gmail.com"
-	PASSWORD = "wakeupsheeple123!"
 	TOADDRS  = [toAddress]
 	SUBJECT  = "A Reservation Has Become Available!"
 
@@ -23,10 +24,8 @@ def sendReservationOpenAlertEmail(toAddress, mountain, month, day, year, dayOfWe
 	server.quit()
 
 def sendDateToReserveAlertEmail(toAddress, mountain, month, day, year, dayOfWeek, email):
-	"""Sends an email using smtp.
+	"""Sends an email notifying user that a date they want to reserve has become available
 	"""
-	FROMADDR = "mtnrezalert@gmail.com"
-	PASSWORD = "wakeupsheeple123!"
 	TOADDRS  = [toAddress]
 	SUBJECT  = "A Date To Reserve Reservation Has Become Available!"
 
@@ -42,13 +41,11 @@ def sendDateToReserveAlertEmail(toAddress, mountain, month, day, year, dayOfWeek
 	server.sendmail(FROMADDR, TOADDRS, msg)
 	server.quit()
 
-def sendErrorEmail(error):
-	"""Sends an email to me notifying the program experienced an error
+def sendErrorEmail(error, email):
+	"""Sends an email notifying user that the script experienced an error
 	"""
-	FROMADDR = "mtnrezalert@gmail.com"
-	PASSWORD = "wakeupsheeple123!"
-	TOADDRS  = ["jjohnson11096@gmail.com"]
-	SUBJECT  = "Error occurred on server!"
+	TOADDRS  = [email]
+	SUBJECT  = "Error occurred running auto mountain reserver script!"
 
 	msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n"
 	       % (FROMADDR, ", ".join(TOADDRS), SUBJECT) )

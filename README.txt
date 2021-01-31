@@ -2,16 +2,32 @@ Created by Jake Johnson and Preston Windfeldt
 
 Description
 
-Software for automatically reserving Ikon mountain reservations when they become available. This uses python3, mysql, and selenium.
+Software for automatically reserving Ikon mountain reservations when they become available. This uses python3 and selenium.
 
 Usage
 
--Run src/main.py [email] [password] with from top directory of project with python3
--Use email and password for the Ikon account to make reservations on
--Change the email used in the email alerts to whatever email you want
--Use the python scripts under sql/ to add or remove dates you want to automatically reserve
+-Input dates you want to reserve in the text file datesToReserve.txt
+	-format (all integers): [month] [day] [year]
+	 ie: 3 1 2021
+-Edit mountainsToCheck list in ikonScraperInterface.py to change which Ikon mountains to check
+	-Make sure the name you input is the exact name used on Ikon site when you try to make a reservation
+-Run src/main.py [email] [password] from top directory of project with python3
+	$py src/main.py [email] [password]
+-You can turn off headless mode to watch scraper click through site
+	-set HEADLESS to 0 in top of main.py
+	-note you might not be able to if you are running on an external server
+
 
 Installation
+
+Windows (follow this roughly for Mac as well)
+-install python3
+-install selenium
+	-$py -m pip3 install selenium
+-install chrome
+-install chrome driver for the version of chrome you have (86/87/88/etc)
+	-https://chromedriver.chromium.org/downloads
+-add chromedriver file to PATH or put in top directory of this project
 
 Ubuntu
 -install python3
@@ -21,43 +37,15 @@ Ubuntu
 -install selenium for python
 	$py -m pip3 install selenium
 -install selenium and chrome driver for web server (just run this even if not using server)
-	$py setup/installSelenium.py
+	$py src/installSelenium.py
 	-ctrl-c once this is done running
 	-I followed this link if anything goes wrong: https://tecadmin.net/setup-selenium-chromedriver-on-ubuntu/
 -install chrome
 	$sudo apt-get install libxss1 libappindicator1 libindicator7
 	$wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 	$sudo apt install ./google-chrome*.deb
--install mysql
-	-sudo apt install mysql-server
-	-sudo mysql_secure_installation
-		-say yes to everything
-		-make password "PurpleNapkin111$"
-	-python3 -m pip install mysql
-        -python3 -m pip install mysql-connector-python
-        -python3 -m pip install mysql-connector-python-rf
-
--setup sql database
-	-run mysql
-	-run these commands in mysql
-            CREATE USER 'reserver'@'localhost' IDENTIFIED BY 'PurpleNapkin111$';
-            GRANT ALL PRIVILEGES ON * . * TO 'reserver'@'localhost';
-            FLUSH PRIVILEGES;
-            CREATE DATABASE mtnrez;
-            USE mtnrez;
-            CREATE TABLE datesToReserve(month int, day int, year int);
 -remove junk files
 	$rm selenium-server-standalone-3.13.0.jar
 	$rm chromedriver_linux64
 	$rm testng-6.8.7.jar
 	$rm testng-6.8.7.jar.zip
-
-Windows
--install python3
--install selenium
-	-$py -m pip3 install selenium
--install chrome
--install xampp with mysql
--open up localhost/phpmyadmin in browser and run the sql commands in setup/sqlSetup.sql
--install chrome driver for the version of chrome you have (86/87/88/etc)
-	-https://chromedriver.chromium.org/downloads
