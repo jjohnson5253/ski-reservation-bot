@@ -21,10 +21,11 @@ Software for automatically reserving Ikon mountain reservations when they become
 
 ## Installation
 
-#### Windows
+#### Windows (roughly same for Mac)
 - install python3
 - install selenium
 	- `$py -m pip3 install selenium`
+	- use equivalent command for Mac ^
 - install chrome
 - install chrome driver for the version of chrome you have (86/87/88/etc)
 	- https://chromedriver.chromium.org/downloads
