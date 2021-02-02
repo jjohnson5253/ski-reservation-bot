@@ -1,5 +1,5 @@
 #### Created by Jake Johnson and Preston Windfeldt
-Special thanks to Anthony Cudzinovica and Alex Hirst
+<sub><sup>Special thanks to Anthony Cudzinovica and Alex Hirst</sup></sub>
 
 ## Description
 
@@ -7,16 +7,17 @@ Software for automatically reserving Ikon mountain reservations when they become
 
 ## Usage
 
-- Input dates you want to reserve in the text file datesToReserve.txt
+- Input reservations you want in the text file datesToReserve.txt
   - format: [month],[day],[year],[mountain],[email]
   - ie: 3,7,2021,Arapahoe Basin,billybob<span>@</span>gmail.com
+  - if you input the same reservation but with a different mountain, the script will reserve first one that opens up
+  - You can add different emails to datesToReserve.txt but you must run the script with the email account you want to get the reservation on. Adding different emails is just for the convenience of being able to run the script simultaneously for different accounts
 - Make sure the mountain name you input is the exact name used on Ikon site
 - Run src/main.py [email] [password] from top directory of project with python3
   - `$py src/main.py [email] [password]`
 - You can turn off headless mode to watch scraper click through site
   - set HEADLESS to 0 in top of main.py
   - note you might not be able to if you are running on an external server
-- You can add different emails to datesToReserve.txt but you must run the script with the email account you want to get the reservation on. Adding different emails is just for the convenience of being able to run the script simultaneously for different accounts
 
 ## Installation
 

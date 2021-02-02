@@ -23,14 +23,7 @@ AVAILABLE = 'DayPicker-Day'
 # class name if available and day is today
 AVAILABLE_TODAY = 'DayPicker-Day DayPicker-Day--today'
 # months to check for availability
-monthsToCheck = {
-	1: "January",
-	2: "February",
-	3: "March",
-	4: "April",
-	5: "May",
-	6: "June"
-}
+
 # dict to store index of day/month/year in each line of datesToReserve
 # txt file
 datesTxtFileIndex = {'day':0, 'month':1, 'year':2, 'mountain': 3, 'email': 4}
@@ -108,13 +101,12 @@ def selectMonth(driver, month, year):
 		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error selecting month " + month, ikonEmail)		
+		emailInterface.sendErrorEmail("Error selecting month " + str(month), ikonEmail)		
 		sys.exit()
 
 	# loop through months until correct month is being checked. 
 	# Will start from month entered and increment until June 2021.
-	while (monthBeingChecked.get_attribute('innerHTML') != 
-        (month + ' ' + str(year))):
+	while (monthBeingChecked.get_attribute('innerHTML') != (month + ' ' + str(year))):
 		# if we have reached June and that was not desired month, return
 		if monthBeingChecked.get_attribute('innerHTML') == ("June 2021") and month != "June":
 			print("Error: Failed to select month")
@@ -129,7 +121,7 @@ def selectMonth(driver, month, year):
 			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
 		except:
 			print("Error: Timed out")
-			emailInterface.sendErrorEmail("Error selecting month " + month, ikonEmail)
+			emailInterface.sendErrorEmail("Error selecting month " + str(month), ikonEmail)
 			sys.exit()
 
 def isDayAvailable(driver, month, day, year):
@@ -150,10 +142,10 @@ def isDayAvailable(driver, month, day, year):
 	try:
 		# wait for page to load
 		dayElement = WebDriverWait(driver, 20).until(
-	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
+	    EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + str(month) + ' ' + dayFormatted + '")]')))
 	except:
 		print("Error: Timed out")
-		emailInterface.sendErrorEmail("Error checking day availability for " + month + " " + day, ikonEmail)
+		emailInterface.sendErrorEmail("Error checking day availability for " + str(month) + " " + str(day), ikonEmail)
 		sys.exit()
 
 	# return if day is available or not
@@ -162,6 +154,16 @@ def isDayAvailable(driver, month, day, year):
 	else:
 		return False
 
+def updateMonthsToCheck(monthsToCheck):
+	"""Deletes months that are already passed current month
+	"""
+	today = str(datetime.date.today());
+	currentMonth = int(today[5:7]);
+
+	# delete months that are before current month
+	for month in range(1, currentMonth):
+		del monthsToCheck[month]
+		
 def addDatesToReserveToList(datesToReserve, mountainsToCheck):
 	# get path to datesToReserve file. Should be in directory above this script
 	script_dir = os.path.dirname(__file__)
@@ -181,7 +183,7 @@ def addDatesToReserveToList(datesToReserve, mountainsToCheck):
 			if date[datesTxtFileIndex['mountain']] not in mountainsToCheck:
 				mountainsToCheck.append(date[datesTxtFileIndex['mountain']])
 
-def addAvailableDatesToList(driver, datesAvailable, mountainsToCheck):
+def addAvailableDatesToList(driver, datesAvailable, mountainsToCheck, monthsToCheck):
 	"""Scrapes Ikon site and adds available dates to list.
 	"""
 	# check reserved dates for each mountain. Only check Jan-June 
@@ -197,7 +199,7 @@ def addAvailableDatesToList(driver, datesAvailable, mountainsToCheck):
 				if isDayAvailable(driver, monthsToCheck[month], day, year):
 					datesAvailable.append([mountain, month, day, year])
 
-def checkForOpenings(driver, datesAvailable, datesToReserve, mountainsToCheck):
+def checkForOpenings(driver, datesAvailable, datesToReserve, mountainsToCheck, monthsToCheck):
 	"""Checks if any reserved days have become available by scraping Ikon site 
 	and comparing to the current stored available dates in our list. Reserves 
 	days that are set in database if they become available.
@@ -260,10 +262,10 @@ def reserveDay(driver, month, day, year, mountain):
 	try:
 		# wait for page to load
 		dayElement = WebDriverWait(driver, 20).until(
-		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + month + ' ' + dayFormatted + '")]')))
+		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + str(month) + ' ' + dayFormatted + '")]')))
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + month + " " + str(day) + ", " + str(year), ikonEmail)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# click save button
@@ -273,7 +275,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# give time for button click
@@ -286,7 +288,7 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# give time for button click
@@ -300,7 +302,7 @@ def reserveDay(driver, month, day, year, mountain):
             '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# give time for button click
@@ -313,12 +315,12 @@ def reserveDay(driver, month, day, year, mountain):
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
-		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + month + " " + str(day) + ", " + str(year), ikonEmail)
+		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	return 1
 
-def checkSpecificReservation(driver, mountain, month, day, year):
+def checkSpecificReservation(driver, mountain, month, day, year, monthsToCheck):
 	"""Checks for specific reservation and reserves if available
 	"""
 	# reload to allow new mountain selection

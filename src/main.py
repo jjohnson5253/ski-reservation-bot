@@ -13,7 +13,7 @@ import time
 
 # MACRO for if web driver should run in headless mode or not
 # Must be set to 1 if running on virtual server
-HEADLESS = 1
+HEADLESS = 0
 
 def main():	
 	"""Main function. initializes web driver, logs into ikon site,
@@ -26,6 +26,15 @@ def main():
 	availableDates = []
 	# mountains to check for availability
 	mountainsToCheck = []
+	# dictionary to store which months to check. Gets updated.
+	monthsToCheck = {
+	1: "January",
+	2: "February",
+	3: "March",
+	4: "April",
+	5: "May",
+	6: "June"
+	}
 
 	# initialize web driver
 	if (HEADLESS):
@@ -45,13 +54,16 @@ def main():
 	# login to ikon website
 	ikonScraperInterface.login(driver)
 
+	# remove months to check that have already been passed
+	ikonScraperInterface.updateMonthsToCheck(monthsToCheck)
+
 	# fill up dates lists
 	ikonScraperInterface.addDatesToReserveToList(datesToReserve, mountainsToCheck)
-	ikonScraperInterface.addAvailableDatesToList(driver, availableDates, mountainsToCheck)
+	ikonScraperInterface.addAvailableDatesToList(driver, availableDates, mountainsToCheck, monthsToCheck)
 
 	# Constantly check for openings in reservations
 	while(True):
-		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve, mountainsToCheck)
+		ikonScraperInterface.checkForOpenings(driver, availableDates, datesToReserve, mountainsToCheck, monthsToCheck)
 		print("Still checking")
 
 		# sleep so CPU processing doesn't get taken up
