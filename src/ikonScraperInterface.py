@@ -38,6 +38,8 @@ datesTxtFileIndex = {'day':0, 'month':1, 'year':2, 'mountain': 3, 'email': 4}
 year = 2021
 # Ikon account email
 ikonEmail = sys.argv[1]
+# Ikon account password
+ikonPassword = sys.argv[2]
 # macro for if user wants all mountain openings to be emailed to them.
 # Not just ones in their dates to reserve.
 ALERT_ALL_OPENINGS = False
@@ -53,9 +55,9 @@ def login(driver):
 	
 	# send login parameters
 	username = driver.find_element_by_name('email')
-	username.send_keys(sys.argv[1])
+	username.send_keys(ikonEmail)
 	password = driver.find_element_by_name('password')
-	password.send_keys(sys.argv[2])
+	password.send_keys(ikonPassword)
 	password.send_keys(Keys.RETURN)
 
 	# click 'Make a Reservation' button
