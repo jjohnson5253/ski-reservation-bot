@@ -1,5 +1,5 @@
-#### Created by Jake Johnson and Preston Windfeldt
-<sub><sup>Special thanks to Anthony Cudzinovica and Alex Hirst</sup></sub>
+### Created by Jake Johnson and Preston Windfeldt
+Special thanks to Anthony Cudzinovica and Alex Hirst
 
 ## Description
 
