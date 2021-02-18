@@ -98,7 +98,7 @@ def selectMonth(driver, month, year):
 	try:
 		# wait for page to load
 		monthBeingChecked = WebDriverWait(driver, 20).until(
-		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
+		EC.presence_of_element_located((By.XPATH, '//span[@class="sc-pAXsk xfqye"]')))
 	except:
 		print("Error: Timed out")
 		emailInterface.sendErrorEmail("Error selecting month " + str(month), ikonEmail)		
@@ -118,7 +118,7 @@ def selectMonth(driver, month, year):
 
 		try:
 			monthBeingChecked = WebDriverWait(driver, 20).until(
-			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-qPyvj jTgFdL"]')))
+			EC.presence_of_element_located((By.XPATH, '//span[@class="sc-pAXsk xfqye"]')))
 		except:
 			print("Error: Timed out")
 			emailInterface.sendErrorEmail("Error selecting month " + str(month), ikonEmail)

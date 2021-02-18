@@ -2,5 +2,8 @@ debug.log
 chromedriver.exe
 src/__pycache__/
 
+# dates to reserve should be different for every user
+datesToReserve.txt
+
 # for virtualenv users
 /venv/
