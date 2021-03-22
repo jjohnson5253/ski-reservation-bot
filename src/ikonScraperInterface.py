@@ -46,22 +46,16 @@ def login(driver):
 	url = "https://account.ikonpass.com/en/login"
 	driver.get(url)
 
-	# If Ikon is using captcha, attempt to run the script 5+ times, then they
-	# will ask for captcha right when bot gets to site. Uncomment this timer
-	# and manually enter captcha, then bot will run after. Make sure headless
-	# mode is off
-	#time.sleep(120)
+	#time.sleep(80)
 	
 	# send login parameters
 	username = driver.find_element_by_name('email')
 	username.send_keys(ikonEmail)
-	#time.sleep(3)
 	password = driver.find_element_by_name('password')
 	password.send_keys(ikonPassword)
-	#time.sleep(3)
 	password.send_keys(Keys.RETURN)
 
-	##time.sleep(80)
+	#time.sleep(80)
 
 	# click 'Make a Reservation' button
 	try:
@@ -72,7 +66,6 @@ def login(driver):
 		print("Error: Timed out")
 		emailInterface.sendErrorEmail("Error logging in", ikonEmail)
 		sys.exit()
-	#time.sleep(5)
 	driver.execute_script("arguments[0].click();", resButton)
 
 def selectMountain(driver, mountain):
@@ -88,9 +81,7 @@ def selectMountain(driver, mountain):
 		print("Error: Timed out")
 		emailInterface.sendErrorEmail("Error selecting mountain " + mountain, ikonEmail)
 		sys.exit()
-	#time.sleep(5)
 	driver.execute_script("arguments[0].click();", mountain)
-	#time.sleep(3)
 
 	# click 'Continue' button
 	try:
@@ -101,7 +92,6 @@ def selectMountain(driver, mountain):
 		print("Error: Timed out")
 		emailInterface.sendErrorEmail("Error selecting mountain " + mountain, ikonEmail)
 		sys.exit()
-	#time.sleep(5)
 	driver.execute_script("arguments[0].click();", contButton)
 
 def selectMonth(driver, month, year):
@@ -128,7 +118,6 @@ def selectMonth(driver, month, year):
 
 		# go to next month
 		nextMonthButton = driver.find_element(By.XPATH, '//i[@class="amp-icon icon-chevron-right"]')
-		#time.sleep(3)
 		driver.execute_script("arguments[0].click();", nextMonthButton)
 
 		try:
@@ -205,9 +194,7 @@ def addAvailableDatesToList(driver, datesAvailable, mountainsToCheck, monthsToCh
 	# TODO: make this scalable to whatever current year is
 	for mountain in mountainsToCheck:
 		# reload to allow new mountain selection
-		#time.sleep(3)
 		driver.get(makeResUrl)
-		#time.sleep(3)
 		selectMountain(driver, mountain)
 		for month in monthsToCheck:
 			selectMonth(driver, monthsToCheck[month], year)
@@ -280,7 +267,6 @@ def reserveDay(driver, month, day, year, mountain):
 		# wait for page to load
 		dayElement = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//div[contains(@aria-label,"' + str(month) + ' ' + dayFormatted + '")]')))
-		#time.sleep(3)
 		driver.execute_script("arguments[0].click();", dayElement)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on "  + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
@@ -291,28 +277,26 @@ def reserveDay(driver, month, day, year, mountain):
 		# wait for page to load
 		saveButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Save"]')))
-		#time.sleep(3)
 		driver.execute_script("arguments[0].click();", saveButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# give time for button click
-	#time.sleep(1)
+	time.sleep(1)
 
 	# click confirm button
 	try:
 		# wait for page to load
 		confirmButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Continue to Confirm"]')))
-		#time.sleep(3)
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# give time for button click
-	#time.sleep(1)
+	time.sleep(1)
 	
 	# click confirm checkbox
 	try:
@@ -320,21 +304,19 @@ def reserveDay(driver, month, day, year, mountain):
 		confirmCheckbox = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, 
             '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[4]/label/input')))
-		#time.sleep(3)
 		driver.execute_script("arguments[0].click();", confirmCheckbox)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)
 		return 0
 
 	# give time for button click
-	#time.sleep(1)
+	time.sleep(1)
 
 	# click confirm button again
 	try:
 		# wait for page to load
 		confirmButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/div/main/section[2]/div/div[2]/div[4]/div/div[5]/button/span')))
-		#time.sleep(3)
 		driver.execute_script("arguments[0].click();", confirmButton)
 	except:
 		emailInterface.sendErrorEmail("Error reserving " + mountain + " on " + str(month) + " " + str(day) + ", " + str(year), ikonEmail)

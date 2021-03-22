@@ -45,8 +45,6 @@ def main():
 		options.add_argument("--no-sandbox")
 		options.add_argument("--log-level=3");
 		driver = webdriver.Chrome(options=options)
-		driver.set_window_position(0, 0)
-		driver.set_window_size(1024, 768)
 	else:
 		driver = webdriver.Chrome()
 
