@@ -46,7 +46,11 @@ def login(driver):
 	url = "https://account.ikonpass.com/en/login"
 	driver.get(url)
 
-	#time.sleep(80)
+	# If Ikon is using captcha, attempt to run the script 5+ times, then they
+	# will ask for captcha right when bot gets to site. Uncomment this timer
+	# and manually enter captcha, then bot will run after. Make sure headless
+	# mode is off
+	#time.sleep(120)
 	
 	# send login parameters
 	username = driver.find_element_by_name('email')
@@ -55,12 +59,10 @@ def login(driver):
 	password.send_keys(ikonPassword)
 	password.send_keys(Keys.RETURN)
 
-	#time.sleep(80)
-
 	# click 'Make a Reservation' button
 	try:
 		# wait for page to load
-		resButton = WebDriverWait(driver, 60).until(
+		resButton = WebDriverWait(driver, 20).until(
 		EC.presence_of_element_located((By.XPATH, '//span[text()="Make a Reservation"]')))
 	except:
 		print("Error: Timed out")
