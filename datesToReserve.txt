@@ -1,2 +1,2 @@
-3,7,2021,Arapahoe Basin,jjohnson11096@gmail.com
-3,7,2021,Winter Park Resort,jjohnson11096@gmail.com
+3,28,2021,Winter Park Resort,jjohnson11096@gmail.com
+4,4,2021,Winter Park Resort,jjohnson11096@gmail.com
