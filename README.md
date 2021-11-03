@@ -1,25 +1,24 @@
-### Created by Jake Johnson and Preston Windfeldt
-Special thanks to Anthony Cudzinovica and Alex Hirst
+## :warning: Note
+This project is out of data. However, it can be used as a starting point for a web scraping app.
 
-## Description
+## :skier: Description
 
-Software for automatically reserving Ikon mountain reservations when they become available. This uses python3, mysql, and selenium.
+We were tired of waiting for reservations to open up so we made this software for automatically reserving Ikon mountain reservations when they become available. This project uses python3, and selenium.
 
-## Usage
+## :fire: Usage
 
-- Input reservations you want in the text file datesToReserve.txt
-  - format: [month],[day],[year],[mountain],[email]
-  - ie: 3,7,2021,Arapahoe Basin,billybob<span>@</span>gmail.com
-  - if you input the same reservation but with a different mountain, the script will reserve first one that opens up
-  - You can add different emails to datesToReserve.txt but you must run the script with the email account you want to get the reservation on. Adding different emails is just for the convenience of being able to run the script simultaneously for different accounts
-- Make sure the mountain name you input is the exact name used on Ikon site
+- Input reservations you want in the text file datesToReserve.txt, delimited by commas
+  - format: `[month],[day],[year],[mountain],[email]`
+  - ie: `3,7,2021,Arapahoe Basin,billybob@gmail.com`
+  	- note: if you input the same date but with a different mountain, the script will reserve first one that opens up
+- Make sure the mountain name you input is the exact name used on Ikon site :mountain_snow:
 - Run src/main.py [email] [password] from top directory of project with python3
   - `$py src/main.py [email] [password]`
-- You can turn off headless mode to watch scraper click through site
+- You can turn off headless mode to watch scraper click through site :eyes:
   - set HEADLESS to 0 in top of main.py
   - note you might not be able to if you are running on an external server
 
-## Installation
+## :computer: Installation
 
 #### Windows (roughly same for Mac)
 - install python3
@@ -52,3 +51,6 @@ Software for automatically reserving Ikon mountain reservations when they become
 	- `$rm chromedriver_linux64`
 	- `$rm testng-6.8.7.jar`
 	- `$rm testng-6.8.7.jar.zip`
+
+### Created by Jake Johnson :snowboarder: and Preston Windfeldt :skier:
+Special thanks to Anthony Cudzinovica and Alex Hirst
