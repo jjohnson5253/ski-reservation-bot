@@ -3,7 +3,12 @@ This project is out of data. However, it can be used as a starting point for a w
 
 ## :skier: Description
 
-We were tired of waiting for reservations to open up so we made this software for automatically reserving Ikon mountain reservations when they become available. This project uses python3, and selenium.
+We were tired of waiting for reservations to open up so we made this script for automatically reserving Ikon mountain reservations when they become available. This project uses python3, and selenium.
+
+## Demo
+Shows the ikon site being clicked through automatically and printing that the specified date is available. This is footage from early on in project. At end of project, the script actually made the reservation for you.
+<br><br>
+<img src="demo.GIF" width="300" height="500" />
 
 ## :fire: Usage
 
