@@ -26,6 +26,9 @@ Shows the ikon site being clicked through automatically, the email alert for res
 - You can turn off headless mode to watch scraper click through site :eyes:
   - set HEADLESS to 0 in top of main.py
   - note you might not be able to if you are running on an external server
+- You can change email alert settings in `ikonScraperInterface.py`
+	- set `ALERT_ALL_OPENINGS` to `True` if you want to receive alerts on every reservation that becomes open since time of running script
+	- comment out `emailInterface.sendDateToReserveAlertEmail()` if you don't want to receive emails after a reservation is made
 
 ## :electric_plug: Installation
 
