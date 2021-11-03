@@ -6,11 +6,13 @@ This project is out of data. However, it can be used as a starting point for a w
 We were tired of waiting for reservations to open up so we made this script for automatically reserving Ikon mountain reservations when they become available. This project uses python3, and selenium.
 
 ## :movie_camera: Demo
-Shows the ikon site being clicked through automatically and printing that the specified date is available. Shows the email alert for reservation opening and reservation confirmation.
+Shows the ikon site being clicked through automatically, the email alert for reservation opening, and reservation confirmation.
 <br><br>
-<img src="demo/demo.GIF" width="300" height="500" />
-<img src="demo/mtn_rez.png" width="300" height="500" />
-<img src="demo/res_confirmed.png" width="300" height="500" />
+<div align="center">
+<img src="demo/demo.GIF" width="200" height="400" />
+<img src="demo/mtn_rez.png" width="200" height="400" />
+<img src="demo/res_confirmed.png" width="200" height="400" />
+</div>
 
 ## :fire: Usage
 
