@@ -27,9 +27,9 @@ Shows the ikon site being clicked through automatically, the email alert for res
   - set HEADLESS to 0 in top of main.py
   - note you might not be able to if you are running on an external server
 
-## :computer: Installation
+## :electric_plug: Installation
 
-#### Windows (roughly same for Mac)
+#### :computer: Windows (roughly same for Mac)
 - install python3
 - install selenium
 	- `$py -m pip install selenium`
@@ -40,7 +40,7 @@ Shows the ikon site being clicked through automatically, the email alert for res
 	- you can see your chrome version here: chrome://settings/help
 - add chromedriver file to PATH or put in top directory of this project
 
-#### Ubuntu
+#### :computer: Ubuntu
 - install python3
 	- `$sudo apt-get install python3`
 - install pip
@@ -62,4 +62,4 @@ Shows the ikon site being clicked through automatically, the email alert for res
 	- `$rm testng-6.8.7.jar.zip`
 
 ### Created by Jake Johnson :snowboarder: and Preston Windfeldt :skier:
-Special thanks to Anthony Cudzinovica and Alex Hirst
+Special thanks to Anthony Cudzinovica and Alex Hirst :grinning:
