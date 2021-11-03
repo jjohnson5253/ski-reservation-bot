@@ -1,5 +1,5 @@
 ## :warning: Note
-This project is out of data. However, it can be used as a starting point for a web scraping app.
+This project is out of data. However, it can be used as a starting point for a web scraping app or reservation/purchasing bot. :robot:
 
 ## :skier: Description
 
