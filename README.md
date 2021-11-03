@@ -3,7 +3,7 @@ This project is out of data. However, it can be used as a starting point for a w
 
 ## :skier: Description
 
-We were tired of waiting for reservations to open up :rage: so we made this script to automatically reserve Ikon mountain reservations when they became available :partying_face:. This project uses python 3 :snake:, and selenium.
+We were tired of waiting for reservations to open up :rage: so we made this script to automatically reserve Ikon mountain reservations when they became available :sunglasses:. This project uses python 3 :snake:, and selenium.
 
 ## :movie_camera: Demo
 Shows the ikon site being clicked through automatically, the email alert for reservation opening, and reservation confirmation.
